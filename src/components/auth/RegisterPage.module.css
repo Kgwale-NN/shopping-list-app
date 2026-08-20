@@ -1,0 +1,207 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.register-card {
+  background: white;
+  padding: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  box-sizing: border-box;
+}
+
+.register-card h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+.error-message {
+  background-color: #fee2e2;
+  color: #dc2626;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #374151;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.register-button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.register-button:hover {
+  background-color: #2563eb;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 1rem;
+  color: #6b7280;
+}
+
+.login-link a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+/* Mobile - 320px */
+@media (max-width: 320px) {
+  .register-container {
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  .register-card {
+    padding: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .register-card h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .form-group input {
+    padding: 0.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    font-size: 0.9rem;
+    box-sizing: border-box;
+  }
+
+  .register-button {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Small Mobile - 480px */
+@media (min-width: 321px) and (max-width: 480px) {
+  .register-container {
+    padding: 15px;
+    box-sizing: border-box;
+  }
+
+  .register-card {
+    padding: 1.5rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .register-card h2 {
+    font-size: 1.5rem;
+  }
+
+  .form-group input {
+    padding: 0.6rem;
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    box-sizing: border-box;
+  }
+
+  .register-button {
+    padding: 0.7rem;
+  }
+}
+
+/* Tablet - 768px */
+@media (min-width: 481px) and (max-width: 768px) {
+  .register-card {
+    max-width: 500px;
+    padding: 1.8rem;
+    padding-left: 1.8rem;
+    padding-right: 1.8rem;
+    box-sizing: border-box;
+  }
+
+  .register-card h2 {
+    font-size: 1.75rem;
+  }
+}
+
+/* Small Desktop - 1024px */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .register-card {
+    max-width: 520px;
+    padding: 2rem;
+    padding-left: 2rem;
+    padding-right: 2rem;
+    box-sizing: border-box;
+  }
+
+  .register-card h2 {
+    font-size: 2rem;
+  }
+}
+
+/* Large Desktop - 1200px and above */
+@media (min-width: 1025px) {
+  .register-card {
+    max-width: 550px;
+    padding: 2.5rem;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+    box-sizing: border-box;
+  }
+
+  .register-card h2 {
+    font-size: 2rem;
+  }
+}
