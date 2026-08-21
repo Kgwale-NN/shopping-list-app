@@ -1,20 +1,25 @@
-import { configureStore } from '@reduxjs/toolkit';
-import authReducer from './authSlice';
-import profileReducer from './profileSlice';
-import shoppingListReducer from './shoppingListSlice';
+import { configureStore } from "@reduxjs/toolkit";
+import authReducer from './authSlice'
+import profileReducer from './profileSlice'
+import shoppingListReducer from './shoppingListSlice'
 
-// Create the Redux store with all reducers
+// Create the redux store with all the reducers
 
 const store = configureStore({
-  reducer: {
-    auth: authReducer,
-    profile: profileReducer,
-    shoppingLists: shoppingListReducer,
-  },
-});
+
+    reducer : {
+
+        auth: authReducer,
+        profile: profileReducer,
+        shoppingList: shoppingListReducer
+    }
+})
 
 // Export types for use in hooks
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
 
-export default store;
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch
+
+export default store
+
+

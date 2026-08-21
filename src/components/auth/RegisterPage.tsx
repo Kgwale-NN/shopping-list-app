@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAppDispatch } from '../../redux/hooks'
-import { setUser, setToken } from '../../redux/authSlice'
-import { type RegisterData } from '../../types/types'
+import { setUser, setToken, setAuthenticated } from '../../redux/authSlice'
 import styles from './RegisterPage.module.css'
 
 export const RegisterPage: React.FC = () => {
@@ -49,6 +48,7 @@ export const RegisterPage: React.FC = () => {
 
       dispatch(setUser(mockUser))
       dispatch(setToken('mock-token'))
+      dispatch(setAuthenticated(true))
       navigate('/home')
     } catch (error) {
 

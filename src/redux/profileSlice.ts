@@ -1,93 +1,77 @@
-import { createSlice , type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice ,type  PayloadAction } from "@reduxjs/toolkit";
 
-// I defined the profile type
+interface  Profile{
 
-interface Profile {
-
-    id :string,
+    id: string,
     email: string,
     name: string,
-    surname : string,
-    cellNumber : string
+    surname: string,
+    cellNumber: string
 
 }
 
-// Profile State type
+interface ProfileState{
 
-interface ProfileState {
-
-    data : Profile | null,
-    loading: boolean ,
+    data: Profile | null,
+    loading: boolean,
     error: string
+    
 }
 
-// Initail state
+const initialState: ProfileState ={
 
-const initialState: ProfileState = {
-
-    data : null,
-    loading : false,
-    error : ' '
+    data: null,
+    loading: false,
+    error: ''
 
 }
 
+const profileSlice = createSlice ({
 
-// The profile slice
-
-const  profileSlice = createSlice({
-
-    name : 'Profile',
+    name: 'profile',
     initialState,
-    reducers : {
+    reducers :{
 
-        // Data of the profile
+        // profile data
 
-        setProfile: (state , action: PayloadAction<Profile>) => {
+        setProfile: (state , action:PayloadAction<Profile>) =>{
 
             state.data = action.payload
         },
 
-          // Update profile
+        // update Profile
 
-        updateProfile: (state , action: PayloadAction<Partial<Profile>>) => {
-           
-            if(state.data){
+        updateProfile: (state , action:PayloadAction<Profile>) =>{
 
-                state.data = {... state.data , ...action.payload}
-            }
+             if(state.data){
 
+                state.data = {...state.data,... action.payload}
+             }
         },
 
+        // set loading state
 
-       //  Loading state is set 
-
-        setLoading: (state, action:PayloadAction<boolean>) => {
+        setLoading: (state , action:PayloadAction<boolean>) => {
 
             state.loading = action.payload
         },
 
-
-        setError: (state , action:PayloadAction<string>) =>{
+        setError: (state , action:PayloadAction<string>) => {
 
             state.error = action.payload
-
         },
 
-        // clear profile data 
+        // clear profile data
 
+        clearProfile: (state) =>{
 
-        clearProfile: (state) => {
-
-            state.data = null,
-            state.loading = false,
+            state.data = null
+            state.loading = false
             state.error = ''
+        }
 
-        },
-
-
-    },
+    }
 })
 
-export const {setProfile,updateProfile,setLoading,setError} = profileSlice.actions
+export const {setProfile,updateProfile,setLoading,setError,clearProfile} = profileSlice.actions
 export default profileSlice.reducer
-

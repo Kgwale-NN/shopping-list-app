@@ -1,70 +1,78 @@
-import { createSlice , type PayloadAction  } from "@reduxjs/toolkit";
+import { createSlice , type PayloadAction } from "@reduxjs/toolkit";
 
-// Define the user type
+// Define the user
 
-interface User {
+interface User{
 
     id: string,
     email: string,
     name: string,
-    surname: string ,
+    surname: string,
     cellNumber: string
-
 }
 
-// Define the authentication state type
+// Define authentication state type
 
-interface AuthState{
+ interface AuthState{
 
-    user : User | null,
+    user: User | null,
     isAuthenticated: boolean,
-    token : string,
-}
+    token: string
 
-// Initial State
+ }
 
-const initialState : AuthState = {
+ // define the initial state
+
+ const initialState: AuthState = {
 
     user : null,
     isAuthenticated : false,
-    token : ''
-}
+    token: ''
+ }
 
-// Create Auth Slice
+ const authSlice = createSlice({
 
-const authSlice = createSlice({
-
-    name: 'auth',
+    name:'auth',
     initialState,
-     reducers : {
+    reducers :{
 
-        // set User when loged in
+        // set user data
 
         setUser :(state , action:PayloadAction<User>) =>{
 
-           state.user = action.payload
+            state.user = action.payload
         },
 
-        // Set authenticaion  token
+        // set authentication token
 
         setToken: (state , action:PayloadAction<string>) =>{
 
-            state.token = action.payload
+         state.token = action.payload
+
         },
 
-        // Logout User
+        // set authentication status
 
-        logout: (state) => {
+        setAuthenticated: (state , action:PayloadAction<boolean>) =>{
 
-            state.user = null
-            state.isAuthenticated = false,
-            state.token = ''
+         state.isAuthenticated = action.payload
+
         },
-     },
+
+        // log user out
+
+        logout: (state) =>{
+
+           state.user = null
+           state.isAuthenticated =false
+           state.token = ''
+
+        }
 
 
-});
+    }
+ })
 
+ export const {setUser,setToken,setAuthenticated,logout} = authSlice.actions
+ export default authSlice.reducer
 
-export const {setUser , setToken , logout} = authSlice.actions
-export default authSlice.reducer
