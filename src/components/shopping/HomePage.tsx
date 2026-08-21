@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { logout, setAuthenticated } from '../../redux/authSlice'
 import ShoppingListCard from './ShoppingListCard'
+import AddListForm from './AddListForm'
+import { type ShoppingListItem } from '../../types/types'
 import styles from './HomePage.module.css'
 
 const HomePage: React.FC = () => {
@@ -10,9 +12,10 @@ const HomePage: React.FC = () => {
   const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.auth.user)
   const [searchQuery, setSearchQuery] = useState('')
+  const [showAddForm, setShowAddForm] = useState(false)
 
   // Mock shopping list data (will be replaced with Redux state)
-  const mockShoppingLists = [
+  const [shoppingLists, setShoppingLists] = useState<ShoppingListItem[]>([
     {
       id: '1',
       name: 'Groceries',
@@ -31,7 +34,7 @@ const HomePage: React.FC = () => {
       userId: user?.id || '1',
       dateAdded: new Date().toISOString()
     }
-  ]
+  ])
 
   const handleLogout = () => {
     dispatch(logout())
@@ -47,6 +50,11 @@ const HomePage: React.FC = () => {
   const handleDelete = (id: string) => {
     console.log('Delete shopping list:', id)
     // Will implement delete functionality later
+  }
+
+  const handleAddList = (newList: ShoppingListItem) => {
+    setShoppingLists([...shoppingLists, newList])
+    setShowAddForm(false)
   }
 
   return (
@@ -70,11 +78,13 @@ const HomePage: React.FC = () => {
       </div>
 
       <div className={styles['add-button-container']}>
-        <button className={styles['add-button']}>+ Add New List</button>
+        <button onClick={() => setShowAddForm(true)} className={styles['add-button']}>
+          + Add New List
+        </button>
       </div>
 
       <div className={styles['shopping-lists-grid']}>
-        {mockShoppingLists.map((list) => (
+        {shoppingLists.map((list) => (
           <ShoppingListCard
             key={list.id}
             shoppingList={list}
@@ -83,6 +93,13 @@ const HomePage: React.FC = () => {
           />
         ))}
       </div>
+
+      {showAddForm && (
+        <AddListForm
+          onAdd={handleAddList}
+          onCancel={() => setShowAddForm(false)}
+        />
+      )}
     </div>
   )
 }
