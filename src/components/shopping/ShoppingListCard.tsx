@@ -26,7 +26,7 @@ const ShoppingListCard: React.FC<ShoppingListCardProps> = ({ shoppingList, onEdi
           <p className={styles['card-notes']}>{shoppingList.notes}</p>
         )}
         <div className={styles['card-actions']}>
-          <button onClick={() => onEdit(shoppingList.id)} className={styles['edit-button']}>
+          <button onClick={ () => onEdit(shoppingList.id)} className={styles['edit-button']}>
             Edit
           </button>
           <button onClick={() => onDelete(shoppingList.id)} className={styles['delete-button']}>

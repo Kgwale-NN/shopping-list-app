@@ -1,18 +1,22 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useMemo } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { logout, setAuthenticated } from '../../redux/authSlice'
 import ShoppingListCard from './ShoppingListCard'
 import AddListForm from './AddListForm'
-import { type ShoppingListItem } from '../../types/types'
+import type { ShoppingListItem } from '../../types/types'
 import styles from './HomePage.module.css'
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.auth.user)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
   const [showAddForm, setShowAddForm] = useState(false)
+
+  // Get search and sort from URL
+  const searchQuery = searchParams.get('search') || ''
+  const sortBy = searchParams.get('sort') || 'date'
 
   // Mock shopping list data (will be replaced with Redux state)
   const [shoppingLists, setShoppingLists] = useState<ShoppingListItem[]>([
@@ -33,8 +37,46 @@ const HomePage: React.FC = () => {
       category: 'Electronics',
       userId: user?.id || '1',
       dateAdded: new Date().toISOString()
+    },
+    {
+      id: '3',
+      name: 'Clothing',
+      quantity: 3,
+      notes: 'Need new clothes for winter',
+      category: 'Clothing',
+      userId: user?.id || '1',
+      dateAdded: new Date(Date.now() - 86400000).toISOString() // Yesterday
     }
   ])
+
+  // Filter and sort shopping lists
+  const filteredAndSortedLists = useMemo(() => {
+    let filtered = shoppingLists
+
+    // Apply search filter
+    if (searchQuery) {
+      filtered = filtered.filter(item =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    }
+
+    // Apply sorting
+    switch (sortBy) {
+      case 'name':
+        filtered.sort((a, b) => a.name.localeCompare(b.name))
+        break
+      case 'category':
+        filtered.sort((a, b) => a.category.localeCompare(b.category))
+        break
+      case 'date':
+        filtered.sort((a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime())
+        break
+      default:
+        break
+    }
+
+    return filtered
+  }, [shoppingLists, searchQuery, sortBy])
 
   const handleLogout = () => {
     dispatch(logout())
@@ -57,6 +99,20 @@ const HomePage: React.FC = () => {
     setShowAddForm(false)
   }
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    if (value) {
+      setSearchParams({ search: value, sort: sortBy })
+    } else {
+      setSearchParams({ sort: sortBy })
+    }
+  }
+
+  const handleSortChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value
+    setSearchParams({ search: searchQuery, sort: value })
+  }
+
   return (
     <div className={styles['home-container']}>
       <div className={styles['home-header']}>
@@ -72,9 +128,18 @@ const HomePage: React.FC = () => {
           type="text"
           placeholder="Search shopping lists..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={handleSearchChange}
           className={styles['search-input']}
         />
+        <select
+          value={sortBy}
+          onChange={handleSortChange}
+          className={styles['sort-select']}
+        >
+          <option value="date">Sort by Date</option>
+          <option value="name">Sort by Name</option>
+          <option value="category">Sort by Category</option>
+        </select>
       </div>
 
       <div className={styles['add-button-container']}>
@@ -84,14 +149,20 @@ const HomePage: React.FC = () => {
       </div>
 
       <div className={styles['shopping-lists-grid']}>
-        {shoppingLists.map((list) => (
-          <ShoppingListCard
-            key={list.id}
-            shoppingList={list}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        ))}
+        {filteredAndSortedLists.length > 0 ? (
+          filteredAndSortedLists.map((list) => (
+            <ShoppingListCard
+              key={list.id}
+              shoppingList={list}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
+          ))
+        ) : (
+          <div className={styles['empty-state']}>
+            <p>No shopping lists found. {searchQuery ? 'Try a different search term.' : 'Create your first list!'}</p>
+          </div>
+        )}
       </div>
 
       {showAddForm && (
