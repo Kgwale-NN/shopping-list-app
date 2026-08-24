@@ -1,77 +1,71 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction} from "@reduxjs/toolkit";
 
-// The shopping list item type
+interface ShoppingListItem{
 
-interface ShoppingListItem {
-  id: string;
-  name: string;
-  quantity: number;
-  notes?: string;
-  category: string;
-  image?: string;
-  userId: string;
-  dateAdded: string;
+    id: string,
+    name: string,
+    quantity: number,
+    notes?:string,
+    category:string,
+    image?:string,
+    userId:string,
+    dateAdded: string
 }
 
-// Shopping list state type
+interface ShoppingListState{
 
-interface ShoppingListState {
-  items: ShoppingListItem[];
-  filteredItems: ShoppingListItem[];
-  loading: boolean;
-  error: string;
-  searchQuery: string;
-  sortBy: string;
+    items: ShoppingListItem[],
+    filteredItems: ShoppingListItem[],
+    loading: boolean,
+    error: string,
+    searchQuery: string,
+    sortBy: string
 }
 
-// Initial state
+const initialState : ShoppingListState = {
 
-const initialState: ShoppingListState = {
-  items: [],
-  filteredItems: [],
-  loading: false,
-  error: '',
-  searchQuery: '',
-  sortBy: 'date',
-};
+items: [],
+filteredItems: [],
+loading: false,
+error: '',
+searchQuery: '',
+sortBy: 'date'
 
-// Create the shopping list slice
+}
 
-const shoppingListSlice = createSlice({
-  name: 'shoppingLists',
-  initialState,
-  reducers: {
+const shoppingListSlice = createSlice ({
 
-    // Set all shopping lists
 
-    setShoppingLists: (state, action: PayloadAction<ShoppingListItem[]>) => {
-      state.items = action.payload;
-      state.filteredItems = action.payload;
+    name: 'shoppingList',
+    initialState,
+    reducers :{
 
-    },
+        setShoppingList: (state,action:PayloadAction<ShoppingListItem>) =>{
 
-    // A new shopping list was added
+            state.items.push(action.payload)
+            state.filteredItems.push(action.payload)
 
-    addShoppingList: (state, action: PayloadAction<ShoppingListItem>) => {
-      state.items.push(action.payload);
-      state.filteredItems.push(action.payload);
-    },
+        },
 
-    // Update shopping list
+        updateShoppingList: (state,action:PayloadAction<ShoppingListItem>) =>{
 
-    updateShoppingList: (state, action: PayloadAction<ShoppingListItem>) => {
 
-      const index = state.items.findIndex(item => item.id === action.payload.id);
-      if (index !== -1) {
-        state.items[index] = action.payload;
-        const filteredIndex = state.filteredItems.findIndex(item => item.id === action.payload.id);
-        if (filteredIndex !== -1) {
-          state.filteredItems[filteredIndex] = action.payload;
-        }
-      }
-    },
+            const index = state.items.findIndex(item => item.id === action.payload.id)
 
-    // Delete shopping list
+            if(index !== -1){
+
+                state.items[index] = action.payload
+
+                const filteredIndex = state.filteredItems.findIndex(item => item.id === action.payload.id)
+
+                if(filteredIndex !== -1){
+
+                    state.filteredItems[filteredIndex] = action.payload
+                }
+            }
+        },
+
+ // Delete shopping list
 
     deleteShoppingList: (state, action: PayloadAction<string>) => {
       state.items = state.items.filter(item => item.id !== action.payload);
@@ -140,8 +134,7 @@ const shoppingListSlice = createSlice({
 // Export actions and reducer
 
 export const {
-  setShoppingLists,
-  addShoppingList,
+  setShoppingList,
   updateShoppingList,
   deleteShoppingList,
   setSearchQuery,
