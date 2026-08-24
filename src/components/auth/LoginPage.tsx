@@ -40,7 +40,7 @@ export const LoginPage:React.FC = () => {
             dispatch(setToken('mock-token'))
             dispatch(setAuthenticated(true))
             navigate('/home')
-        }catch(error){
+        }catch{
 
             setError('Login failed. please try again')
         }

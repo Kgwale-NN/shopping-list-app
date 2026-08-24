@@ -60,8 +60,8 @@ const profileSlice = createSlice ({
 
         clearProfile: (state) =>{
 
-          state.data = null,
-          state.loading = false,
+                    state.data = null
+                    state.loading = false
           state.error = ''
 
         }

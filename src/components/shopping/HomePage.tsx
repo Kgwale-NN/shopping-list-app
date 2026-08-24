@@ -2,10 +2,13 @@ import React, { useState, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { logout, setAuthenticated } from '../../redux/authSlice'
+import { Settings } from 'lucide-react'
 import ShoppingListCard from './ShoppingListCard'
 import AddListForm from './AddListForm'
 import type { ShoppingListItem } from '../../types/types'
 import styles from './HomePage.module.css'
+
+const yesterday = new Date(Date.now() - 86400000).toISOString()
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate()
@@ -45,7 +48,7 @@ const HomePage: React.FC = () => {
       notes: 'Need new clothes for winter',
       category: 'Clothing',
       userId: user?.id || '1',
-      dateAdded: new Date(Date.now() - 86400000).toISOString() // Yesterday
+      dateAdded: yesterday // Yesterday
     }
   ])
 
@@ -119,7 +122,9 @@ const HomePage: React.FC = () => {
         <h1>Shopping Lists</h1>
         <div className={styles['user-info']}>
           <span>Welcome, {user?.name}</span>
-          <button onClick={handleLogout} className={styles['logout-button']}>Logout</button>
+          <button onClick={() => navigate('/settings')} className={styles['settings-button']}>
+            <Settings size={24} />
+          </button>
         </div>
       </div>
 

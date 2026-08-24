@@ -1,0 +1,255 @@
+.settings-container {
+  min-height: 100vh;
+  background-color: #f3f4f6;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.settings-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: white;
+}
+
+.settings-header h1 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.back-button {
+  padding: 0.5rem;
+  background-color: transparent;
+  color: #6b7280;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.back-button:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.spacer {
+  width: 40px;
+}
+
+.settings-content {
+  padding: 1rem 0;
+}
+
+.settings-section {
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  margin: 0 0 0.75rem 0;
+  padding: 0 1.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.settings-item:hover {
+  background-color: #f9fafb;
+}
+
+.settings-item:last-child {
+  border-bottom: none;
+}
+
+.item-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #f3f4f6;
+  border-radius: 50%;
+  color: #6b7280;
+}
+
+.item-label {
+  color: #1f2937;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.item-arrow {
+  color: #9ca3af;
+}
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.dialog {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dialog h2 {
+  margin: 0 0 0.75rem 0;
+  color: #1f2937;
+  font-size: 1.25rem;
+}
+
+.dialog p {
+  margin: 0 0 1.5rem 0;
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.dialog-cancel,
+.dialog-confirm {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.dialog-cancel {
+  background-color: #f3f4f6;
+  color: #1f2937;
+}
+
+.dialog-cancel:hover {
+  background-color: #e5e7eb;
+}
+
+.dialog-confirm {
+  background-color: #ef4444;
+  color: white;
+}
+
+.dialog-confirm:hover {
+  background-color: #dc2626;
+}
+
+/* Mobile - 320px */
+@media (max-width: 320px) {
+  .settings-container {
+    padding: 10px;
+  }
+
+  .settings-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .settings-header h1 {
+    font-size: 1.125rem;
+  }
+
+  .section-title {
+    padding: 0 1rem;
+  }
+
+  .settings-item {
+    padding: 0.75rem 1rem;
+  }
+
+  .item-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .item-label {
+    font-size: 0.875rem;
+  }
+}
+
+/* Small Mobile - 480px */
+@media (min-width: 321px) and (max-width: 480px) {
+  .settings-card {
+    max-width: 100%;
+  }
+}
+
+/* Tablet - 768px */
+@media (min-width: 481px) and (max-width: 768px) {
+  .settings-card {
+    max-width: 550px;
+  }
+}
+
+/* Small Desktop - 1024px */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .settings-container {
+    padding: 30px;
+  }
+
+  .settings-card {
+    max-width: 580px;
+  }
+}
+
+/* Large Desktop - 1200px and above */
+@media (min-width: 1025px) {
+  .settings-container {
+    padding: 40px;
+  }
+
+  .settings-card {
+    max-width: 600px;
+  }
+}
