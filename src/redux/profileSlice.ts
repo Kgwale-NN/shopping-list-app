@@ -39,10 +39,7 @@ const profileSlice = createSlice ({
 
         setUpdateProfile: (state,action:PayloadAction<Profile>) => {
 
-              if(state.data){
-
-                state.data = {... state.data, ... action.payload}
-              }
+              state.data = state.data ? {... state.data, ... action.payload} : action.payload
 
         },
 
@@ -69,6 +66,6 @@ const profileSlice = createSlice ({
 
 })
 
-export const {setProfile,setUpdateProfile,setLoading,setError} = profileSlice.actions
+export const {setProfile,setUpdateProfile,setLoading,setError,clearProfile} = profileSlice.actions
 export default profileSlice.reducer
 

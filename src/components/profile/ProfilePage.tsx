@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { setUpdateProfile } from '../../redux/profileSlice'
+import { setUser } from '../../redux/authSlice'
+import { reportError } from '../../utils/errors'
 import { ArrowLeft } from 'lucide-react'
 import styles from './ProfilePage.module.css'
 
@@ -22,6 +24,7 @@ const ProfilePage: React.FC = () => {
     confirmPassword: '',
   })
   const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing)
@@ -37,33 +40,54 @@ const ProfilePage: React.FC = () => {
 
   const handleProfileUpdate = (e: React.FormEvent) => {
     e.preventDefault()
-    
+    setMessage('')
+    setError('')
+
+    if (!user) {
+      setError('You are not signed in, so the profile could not be updated')
+      return
+    }
+
     // Update the user profile
     const updatedProfile = {
-      id: user?.id || '1',
+      id: user.id,
       name: editForm.name,
       surname: editForm.surname,
       email: editForm.email,
       cellNumber: editForm.cellNumber,
     }
 
-    dispatch(setUpdateProfile(updatedProfile))
+    try {
+      dispatch(setUpdateProfile(updatedProfile))
+      dispatch(setUser(updatedProfile))
+    } catch (err) {
+      setError(reportError('Profile update failed', err, 'Could not update your profile. Please try again'))
+      return
+    }
+
     setIsEditing(false)
     setMessage('Profile updated successfully!')
-    
+
     setTimeout(() => setMessage(''), 3000)
   }
 
   const handlePasswordUpdate = (e: React.FormEvent) => {
     e.preventDefault()
-    
+    setMessage('')
+    setError('')
+
+    if (!passwordForm.currentPassword) {
+      setError('Please enter your current password')
+      return
+    }
+
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      setMessage('Passwords do not match')
+      setError('Passwords do not match')
       return
     }
 
     if (passwordForm.newPassword.length < 6) {
-      setMessage('Password must be at least 6 characters')
+      setError('Password must be at least 6 characters')
       return
     }
 
@@ -96,6 +120,12 @@ const ProfilePage: React.FC = () => {
         {message && (
           <div className={styles['message']}>
             {message}
+          </div>
+        )}
+
+        {error && (
+          <div role="alert" className={styles['error-message']}>
+            {error}
           </div>
         )}
 

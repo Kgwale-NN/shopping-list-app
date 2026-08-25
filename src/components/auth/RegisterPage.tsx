@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAppDispatch } from '../../redux/hooks'
 import { setUser, setToken, setAuthenticated } from '../../redux/authSlice'
+import { reportError } from '../../utils/errors'
 import styles from './RegisterPage.module.css'
 
 export const RegisterPage: React.FC = () => {
@@ -50,9 +51,9 @@ export const RegisterPage: React.FC = () => {
       dispatch(setToken('mock-token'))
       dispatch(setAuthenticated(true))
       navigate('/home')
-    } catch {
+    } catch (err) {
 
-      setError('Registration failed. Please try again')
+      setError(reportError('Registration failed', err, 'Registration failed. Please try again'))
     }
   }
 
