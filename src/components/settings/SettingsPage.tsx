@@ -1,14 +1,28 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { logout, setAuthenticated } from '../../redux/authSlice'
 import { User, LogOut, ArrowLeft, ChevronRight } from 'lucide-react'
+import { useAuthSession } from '../../hooks/useAuthSession'
 import styles from './SettingsPage.module.css'
+
+interface SettingsItemProps {
+  icon: React.ReactNode
+  label: string
+  onClick: () => void
+}
+
+const SettingsItem: React.FC<SettingsItemProps> = ({ icon, label, onClick }) => (
+  <div className={styles['settings-item']} onClick={onClick}>
+    <div className={styles['item-left']}>
+      <div className={styles['item-icon']}>{icon}</div>
+      <span className={styles['item-label']}>{label}</span>
+    </div>
+    <ChevronRight size={20} className={styles['item-arrow']} />
+  </div>
+)
 
 const SettingsPage: React.FC = () => {
   const navigate = useNavigate()
-  const dispatch = useAppDispatch()
-  const user = useAppSelector((state) => state.auth.user)
+  const { signOut } = useAuthSession()
   const [showLogoutDialog, setShowLogoutDialog] = useState(false)
 
   const handleProfileClick = () => {
@@ -22,10 +36,7 @@ const SettingsPage: React.FC = () => {
   }
 
   const handleLogoutConfirm = () => {
-    dispatch(logout())
-    dispatch(setAuthenticated(false))
-    navigate('/login')
-
+    signOut()
   }
 
   const handleLogoutCancel = () => {
@@ -54,35 +65,21 @@ const SettingsPage: React.FC = () => {
           <div className={styles['settings-section']}>
             <h2 className={styles['section-title']}>Account</h2>
             
-            <div 
-              className={styles['settings-item']}
+            <SettingsItem
+              icon={<User size={20} />}
+              label="Profile"
               onClick={handleProfileClick}
-            >
-              <div className={styles['item-left']}>
-                <div className={styles['item-icon']}>
-                  <User size={20} />
-                </div>
-                <span className={styles['item-label']}>Profile</span>
-              </div>
-              <ChevronRight size={20} className={styles['item-arrow']} />
-            </div>
+            />
           </div>
 
           <div className={styles['settings-section']}>
             <h2 className={styles['section-title']}>Session</h2>
             
-            <div 
-              className={styles['settings-item']}
+            <SettingsItem
+              icon={<LogOut size={20} />}
+              label="Logout"
               onClick={handleLogoutClick}
-            >
-              <div className={styles['item-left']}>
-                <div className={styles['item-icon']}>
-                  <LogOut size={20} />
-                </div>
-                <span className={styles['item-label']}>Logout</span>
-              </div>
-              <ChevronRight size={20} className={styles['item-arrow']} />
-            </div>
+            />
           </div>
         </div>
       </div>

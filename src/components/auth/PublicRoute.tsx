@@ -1,19 +1,14 @@
 import React from 'react'
-import { Navigate } from 'react-router-dom'
-import { useAppSelector } from '../../redux/hooks'
+import RouteGuard from './RouteGuard'
 
 interface PublicRouteProps {
   children: React.ReactNode
 }
 
-const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated)
-
-  if (isAuthenticated) {
-    return <Navigate to="/home" replace />
-  }
-
-  return <>{children}</>
-}
+const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => (
+  <RouteGuard requireAuth={false} redirectTo="/home">
+    {children}
+  </RouteGuard>
+)
 
 export default PublicRoute

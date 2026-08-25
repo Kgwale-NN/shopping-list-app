@@ -1,13 +1,5 @@
 import { createSlice , type PayloadAction } from "@reduxjs/toolkit";
-
-interface Profile{
-
-    id:string,
-    email:string,
-    name:string,
-    surname:string,
-    cellNumber:string
-}
+import type { User as Profile } from "../types/types";
 
 interface ProfileState{
 

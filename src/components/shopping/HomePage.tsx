@@ -1,18 +1,17 @@
 import React, { useState, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { logout, setAuthenticated } from '../../redux/authSlice'
+import { useAppSelector } from '../../redux/hooks'
 import { Settings } from 'lucide-react'
 import ShoppingListCard from './ShoppingListCard'
 import AddListForm from './AddListForm'
 import type { ShoppingListItem } from '../../types/types'
+import { filterAndSort } from '../../utils/shoppingList'
 import styles from './HomePage.module.css'
 
 const yesterday = new Date(Date.now() - 86400000).toISOString()
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate()
-  const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.auth.user)
   const [searchParams, setSearchParams] = useSearchParams()
   const [showAddForm, setShowAddForm] = useState(false)
@@ -53,39 +52,10 @@ const HomePage: React.FC = () => {
   ])
 
   // Filter and sort shopping lists
-  const filteredAndSortedLists = useMemo(() => {
-    let filtered = shoppingLists
-
-    // Apply search filter
-    if (searchQuery) {
-      filtered = filtered.filter(item =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    }
-
-    // Apply sorting
-    switch (sortBy) {
-      case 'name':
-        filtered.sort((a, b) => a.name.localeCompare(b.name))
-        break
-      case 'category':
-        filtered.sort((a, b) => a.category.localeCompare(b.category))
-        break
-      case 'date':
-        filtered.sort((a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime())
-        break
-      default:
-        break
-    }
-
-    return filtered
-  }, [shoppingLists, searchQuery, sortBy])
-
-  const handleLogout = () => {
-    dispatch(logout())
-    dispatch(setAuthenticated(false))
-    navigate('/login')
-  }
+  const filteredAndSortedLists = useMemo(
+    () => filterAndSort(shoppingLists, searchQuery, sortBy),
+    [shoppingLists, searchQuery, sortBy]
+  )
 
   const handleEdit = (id: string) => {
     console.log('Edit shopping list:', id)

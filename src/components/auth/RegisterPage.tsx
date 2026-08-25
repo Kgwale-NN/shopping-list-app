@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
-import { useAppDispatch } from '../../redux/hooks'
-import { setUser, setToken, setAuthenticated } from '../../redux/authSlice'
+import { Link } from 'react-router-dom'
+import { useAuthSession } from '../../hooks/useAuthSession'
+import { validateCredentials } from '../../utils/validation'
+import FormField from '../ui/FormField'
 import styles from './RegisterPage.module.css'
 
 export const RegisterPage: React.FC = () => {
@@ -12,44 +13,34 @@ export const RegisterPage: React.FC = () => {
   const [surname, setSurname] = useState('')
   const [cellNumber, setCellNumber] = useState('')
   const [error, setError] = useState('')
-  const dispatch = useAppDispatch()
-  const navigate = useNavigate()
+  const { signIn } = useAuthSession()
 
   const handleRegister = async (e: React.FormEvent) => {
 
     e.preventDefault()
+
+    const validationError = validateCredentials({
+      email,
+      password,
+      required: [email, password, name, surname, cellNumber],
+    })
+
+    if (validationError) {
+      setError(validationError)
+      return
+    }
+
     setError('')
-
-    if (!email || !password || !name || !surname || !cellNumber) {
-      setError('Please fill in all fields')
-      return
-    }
-
-    
-    if (!email.includes('@') || !email.includes('.')) {
-      setError('Please enter a valid email address')
-      return
-    }
-
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters')
-      return
-    }
 
     try {
 
-      const mockUser = {
+      signIn({
         id: Date.now().toString(),
         email: email,
         name: name,
         surname: surname,
         cellNumber: cellNumber
-      }
-
-      dispatch(setUser(mockUser))
-      dispatch(setToken('mock-token'))
-      dispatch(setAuthenticated(true))
-      navigate('/home')
+      })
     } catch {
 
       setError('Registration failed. Please try again')
@@ -67,55 +58,50 @@ export const RegisterPage: React.FC = () => {
 
         <form onSubmit={handleRegister}>
 
-          <div className={styles['form-group']}>
-            <label>Name:</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
-            />
-          </div>
+          <FormField
+            label="Name:"
+            className={styles['form-group']}
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter your name"
+          />
 
-          <div className={styles['form-group']}>
-            <label>Surname:</label>
-            <input
-              type="text"
-              value={surname}
-              onChange={(e) => setSurname(e.target.value)}
-              placeholder="Enter your surname"
-            />
-          </div>
+          <FormField
+            label="Surname:"
+            className={styles['form-group']}
+            type="text"
+            value={surname}
+            onChange={(e) => setSurname(e.target.value)}
+            placeholder="Enter your surname"
+          />
 
-          <div className={styles['form-group']}>
-            <label>Email:</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-            />
-          </div>
+          <FormField
+            label="Email:"
+            className={styles['form-group']}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+          />
 
-          <div className={styles['form-group']}>
-            <label>Cell Number:</label>
-            <input
-              type="tel"
-              value={cellNumber}
-              onChange={(e) => setCellNumber(e.target.value)}
-              placeholder="Enter your cell number"
-            />
-          </div>
+          <FormField
+            label="Cell Number:"
+            className={styles['form-group']}
+            type="tel"
+            value={cellNumber}
+            onChange={(e) => setCellNumber(e.target.value)}
+            placeholder="Enter your cell number"
+          />
 
-          <div className={styles['form-group']}>
-            <label>Password:</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-            />
-          </div>
+          <FormField
+            label="Password:"
+            className={styles['form-group']}
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your password"
+          />
 
           <button type='submit' className={styles['register-button']}>Register</button>
         </form>

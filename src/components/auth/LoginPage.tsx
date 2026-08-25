@@ -1,7 +1,8 @@
 import React,{useState} from 'react'
-import {useNavigate,Link} from 'react-router-dom'
-import {useAppDispatch} from '../../redux/hooks'
-import { setUser, setToken, setAuthenticated } from '../../redux/authSlice'
+import {Link} from 'react-router-dom'
+import { useAuthSession } from '../../hooks/useAuthSession'
+import { validateCredentials } from '../../utils/validation'
+import FormField from '../ui/FormField'
 import styles from './LoginPage.module.css'
 
 export const LoginPage:React.FC = () => {
@@ -9,37 +10,33 @@ export const LoginPage:React.FC = () => {
     const [email,setEmail] = useState('')
     const [password,setPassword] = useState('')
     const [error,setError] = useState('')
-    const dispatch = useAppDispatch()
-    const navigate = useNavigate()
+    const { signIn } = useAuthSession()
 
     const handleLogin = async (e: React.FormEvent) => {
 
         e.preventDefault()
-        setError('')
 
-        if(!email || !password){
+        const validationError = validateCredentials({ required: [email, password] })
 
-           setError('please fill in all fields') 
+        if(validationError){
+
+           setError(validationError)
            return
         }
+
+        setError('')
 
         try{
 
             // I need to replace this with he actual API call.
 
-            const mockUser = {
-
+            signIn({
                 id: '1',
                 email: email,
                 name: 'Test',
                 surname: 'User',
                 cellNumber : '1234567890'
-            }
-
-            dispatch(setUser(mockUser))
-            dispatch(setToken('mock-token'))
-            dispatch(setAuthenticated(true))
-            navigate('/home')
+            })
         }catch{
 
             setError('Login failed. please try again')
@@ -59,31 +56,23 @@ export const LoginPage:React.FC = () => {
 
       <form onSubmit={handleLogin}>
 
-          <div className={styles['form-group']}>
-             <label>Email</label>
-             <input
+          <FormField
+            label="Email"
+            className={styles['form-group']}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your Email"
+          />
 
-               type="email"
-               value={email}
-               onChange={(e) => setEmail(e.target.value)}
-               placeholder="Enter your Email"
-
-               />
-
-          </div>
-
-          <div className={styles['form-group']}>
-
-             <label>Password</label>
-             <input
-
-               type="password"
-               value={password}
-               onChange={(e) => setPassword(e.target.value)}
-               placeholder="Enter your Password"
-
-               />
-          </div>
+          <FormField
+            label="Password"
+            className={styles['form-group']}
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Enter your Password"
+          />
 
           <button type='submit' className={styles['login-button']}>login</button>
       </form>
