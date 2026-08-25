@@ -2,6 +2,7 @@ import React,{useState} from 'react'
 import {useNavigate,Link} from 'react-router-dom'
 import {useAppDispatch} from '../../redux/hooks'
 import { setUser, setToken, setAuthenticated } from '../../redux/authSlice'
+import { reportError } from '../../utils/errors'
 import styles from './LoginPage.module.css'
 
 export const LoginPage:React.FC = () => {
@@ -40,9 +41,9 @@ export const LoginPage:React.FC = () => {
             dispatch(setToken('mock-token'))
             dispatch(setAuthenticated(true))
             navigate('/home')
-        }catch{
+        }catch(err){
 
-            setError('Login failed. please try again')
+            setError(reportError('Login failed', err, 'Login failed. Please try again'))
         }
     }
 

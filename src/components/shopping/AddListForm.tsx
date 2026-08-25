@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { type ShoppingListItem } from '../../types/types'
+import { reportError } from '../../utils/errors'
 import styles from './AddListForm.module.css'
 
 interface AddListFormProps {
@@ -13,14 +14,22 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
   const [notes, setNotes] = useState('')
   const [category, setCategory] = useState('Food')
   const [image, setImage] = useState('')
+  const [error, setError] = useState('')
 
   const categories = ['Food', 'Electronics', 'Clothing', 'Home', 'Other']
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
+    setError('')
+
     if (!name) {
-      alert('Please enter a name for the shopping list')
+      setError('Please enter a name for the shopping list')
+      return
+    }
+
+    if (!Number.isFinite(quantity) || quantity < 1) {
+      setError('Quantity must be at least 1')
       return
     }
 
@@ -35,8 +44,13 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
       dateAdded: new Date().toISOString()
     }
 
-    onAdd(newItem)
-    
+    try {
+      onAdd(newItem)
+    } catch (err) {
+      setError(reportError('Failed to add shopping list', err, 'Could not add the shopping list. Please try again'))
+      return
+    }
+
     // Reset form
     setName('')
     setQuantity(1)
@@ -47,12 +61,34 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setImage(reader.result as string)
+    if (!file) {
+      return
+    }
+
+    setError('')
+
+    const reader = new FileReader()
+
+    reader.onload = () => {
+      if (typeof reader.result !== 'string') {
+        setError('Could not read the selected image. Please try another file')
+        return
       }
+      setImage(reader.result)
+    }
+
+    reader.onerror = () => {
+      setError(reportError('Image upload failed', reader.error, 'Could not read the selected image. Please try another file'))
+    }
+
+    reader.onabort = () => {
+      setError('Image upload was cancelled')
+    }
+
+    try {
       reader.readAsDataURL(file)
+    } catch (err) {
+      setError(reportError('Image upload failed', err, 'Could not read the selected image. Please try another file'))
     }
   }
 
@@ -60,6 +96,7 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
     <div className={styles['form-container']}>
       <div className={styles['form-card']}>
         <h2>Add New Shopping List</h2>
+        {error && <div role="alert" className={styles['error-message']}>{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className={styles['form-group']}>
             <label>Name *</label>
