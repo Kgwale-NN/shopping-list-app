@@ -2,6 +2,8 @@ import React,{useState} from 'react'
 import {useNavigate,Link} from 'react-router-dom'
 import {useAppDispatch} from '../../redux/hooks'
 import { setUser, setToken, setAuthenticated } from '../../redux/authSlice'
+import { signIn } from '../../services/authService'
+import { validateEmail } from '../../utils/validation'
 import styles from './LoginPage.module.css'
 
 export const LoginPage:React.FC = () => {
@@ -23,21 +25,20 @@ export const LoginPage:React.FC = () => {
            return
         }
 
+        const emailError = validateEmail(email)
+
+        if(emailError){
+
+            setError(emailError)
+            return
+        }
+
         try{
 
-            // I need to replace this with he actual API call.
+            const session = await signIn({ email, password })
 
-            const mockUser = {
-
-                id: '1',
-                email: email,
-                name: 'Test',
-                surname: 'User',
-                cellNumber : '1234567890'
-            }
-
-            dispatch(setUser(mockUser))
-            dispatch(setToken('mock-token'))
+            dispatch(setUser(session.user))
+            dispatch(setToken(session.token))
             dispatch(setAuthenticated(true))
             navigate('/home')
         }catch{
@@ -67,6 +68,8 @@ export const LoginPage:React.FC = () => {
                value={email}
                onChange={(e) => setEmail(e.target.value)}
                placeholder="Enter your Email"
+               autoComplete="email"
+               maxLength={100}
 
                />
 
@@ -81,6 +84,8 @@ export const LoginPage:React.FC = () => {
                value={password}
                onChange={(e) => setPassword(e.target.value)}
                placeholder="Enter your Password"
+               autoComplete="current-password"
+               maxLength={128}
 
                />
           </div>

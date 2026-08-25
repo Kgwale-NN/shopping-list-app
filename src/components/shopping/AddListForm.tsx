@@ -1,5 +1,13 @@
 import React, { useState } from 'react'
 import { type ShoppingListItem } from '../../types/types'
+import {
+  ALLOWED_IMAGE_TYPES,
+  MAX_NOTES_LENGTH,
+  MAX_QUANTITY,
+  MAX_TEXT_LENGTH,
+  validateImageFile,
+  validateQuantity,
+} from '../../utils/validation'
 import styles from './AddListForm.module.css'
 
 interface AddListFormProps {
@@ -13,22 +21,44 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
   const [notes, setNotes] = useState('')
   const [category, setCategory] = useState('Food')
   const [image, setImage] = useState('')
+  const [error, setError] = useState('')
 
   const categories = ['Food', 'Electronics', 'Clothing', 'Home', 'Other']
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!name) {
-      alert('Please enter a name for the shopping list')
+    setError('')
+
+    const trimmedName = name.trim()
+
+    if (!trimmedName) {
+      setError('Please enter a name for the shopping list')
+      return
+    }
+
+    if (trimmedName.length > MAX_TEXT_LENGTH) {
+      setError(`Name must be at most ${MAX_TEXT_LENGTH} characters`)
+      return
+    }
+
+    const quantityError = validateQuantity(quantity)
+
+    if (quantityError) {
+      setError(quantityError)
+      return
+    }
+
+    if (!categories.includes(category)) {
+      setError('Please choose a valid category')
       return
     }
 
     const newItem: ShoppingListItem = {
-      id: Date.now().toString(),
-      name,
+      id: crypto.randomUUID(),
+      name: trimmedName,
       quantity,
-      notes,
+      notes: notes.trim(),
       category,
       image,
       userId: '1', // Will be replaced with actual user ID
@@ -47,19 +77,34 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setImage(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+
+    if (!file) {
+      return
     }
+
+    const imageError = validateImageFile(file)
+
+    if (imageError) {
+      setError(imageError)
+      e.target.value = ''
+      setImage('')
+      return
+    }
+
+    setError('')
+
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setImage(typeof reader.result === 'string' ? reader.result : '')
+    }
+    reader.readAsDataURL(file)
   }
 
   return (
     <div className={styles['form-container']}>
       <div className={styles['form-card']}>
         <h2>Add New Shopping List</h2>
+        {error && <div className={styles['error-message']}>{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className={styles['form-group']}>
             <label>Name *</label>
@@ -68,6 +113,7 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter shopping list name"
+              maxLength={MAX_TEXT_LENGTH}
               required
             />
           </div>
@@ -79,6 +125,8 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
               value={quantity}
               onChange={(e) => setQuantity(Number(e.target.value))}
               min="1"
+              max={MAX_QUANTITY}
+              step="1"
               required
             />
           </div>
@@ -105,6 +153,7 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Add any notes (optional)"
               rows={3}
+              maxLength={MAX_NOTES_LENGTH}
             />
           </div>
 
@@ -112,7 +161,7 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
             <label>Image</label>
             <input
               type="file"
-              accept="image/*"
+              accept={ALLOWED_IMAGE_TYPES.join(',')}
               onChange={handleImageUpload}
             />
             {image && (

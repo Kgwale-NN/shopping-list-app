@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { setUpdateProfile } from '../../redux/profileSlice'
 import { ArrowLeft } from 'lucide-react'
+import { validateCellNumber, validateEmail, validateName, validatePassword } from '../../utils/validation'
 import styles from './ProfilePage.module.css'
 
 const ProfilePage: React.FC = () => {
@@ -37,14 +38,24 @@ const ProfilePage: React.FC = () => {
 
   const handleProfileUpdate = (e: React.FormEvent) => {
     e.preventDefault()
-    
-    // Update the user profile
+
+    const validationError =
+      validateName(editForm.name, 'Name') ??
+      validateName(editForm.surname, 'Surname') ??
+      validateEmail(editForm.email) ??
+      validateCellNumber(editForm.cellNumber)
+
+    if (validationError) {
+      setMessage(validationError)
+      return
+    }
+
     const updatedProfile = {
       id: user?.id || '1',
-      name: editForm.name,
-      surname: editForm.surname,
-      email: editForm.email,
-      cellNumber: editForm.cellNumber,
+      name: editForm.name.trim(),
+      surname: editForm.surname.trim(),
+      email: editForm.email.trim(),
+      cellNumber: editForm.cellNumber.trim(),
     }
 
     dispatch(setUpdateProfile(updatedProfile))
@@ -57,18 +68,31 @@ const ProfilePage: React.FC = () => {
   const handlePasswordUpdate = (e: React.FormEvent) => {
     e.preventDefault()
     
+    if (!passwordForm.currentPassword) {
+      setMessage('Please enter your current password')
+      return
+    }
+
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       setMessage('Passwords do not match')
       return
     }
 
-    if (passwordForm.newPassword.length < 6) {
-      setMessage('Password must be at least 6 characters')
+    const passwordError = validatePassword(passwordForm.newPassword)
+
+    if (passwordError) {
+      setMessage(passwordError)
       return
     }
 
-    // In real app, you would verify current password first
-    setMessage('Password updated successfully!')
+    if (passwordForm.newPassword === passwordForm.currentPassword) {
+      setMessage('New password must be different from the current password')
+      return
+    }
+
+    // The current password can only be verified server side, so nothing is
+    // changed until an authentication API is available.
+    setMessage('Password changes are not available yet')
     setPasswordForm({
       currentPassword: '',
       newPassword: '',
@@ -118,6 +142,7 @@ const ProfilePage: React.FC = () => {
                   type="text"
                   value={editForm.name}
                   onChange={(e) => setEditForm({...editForm, name: e.target.value})}
+                  maxLength={100}
                   required
                 />
               </div>
@@ -127,6 +152,7 @@ const ProfilePage: React.FC = () => {
                   type="text"
                   value={editForm.surname}
                   onChange={(e) => setEditForm({...editForm, surname: e.target.value})}
+                  maxLength={100}
                   required
                 />
               </div>
@@ -136,6 +162,7 @@ const ProfilePage: React.FC = () => {
                   type="email"
                   value={editForm.email}
                   onChange={(e) => setEditForm({...editForm, email: e.target.value})}
+                  maxLength={100}
                   required
                 />
               </div>
@@ -145,6 +172,7 @@ const ProfilePage: React.FC = () => {
                   type="tel"
                   value={editForm.cellNumber}
                   onChange={(e) => setEditForm({...editForm, cellNumber: e.target.value})}
+                  maxLength={20}
                   required
                 />
               </div>
@@ -183,6 +211,8 @@ const ProfilePage: React.FC = () => {
                 type="password"
                 value={passwordForm.currentPassword}
                 onChange={(e) => setPasswordForm({...passwordForm, currentPassword: e.target.value})}
+                autoComplete="current-password"
+                maxLength={128}
                 required
               />
             </div>
@@ -192,6 +222,8 @@ const ProfilePage: React.FC = () => {
                 type="password"
                 value={passwordForm.newPassword}
                 onChange={(e) => setPasswordForm({...passwordForm, newPassword: e.target.value})}
+                autoComplete="new-password"
+                maxLength={128}
                 required
               />
             </div>
@@ -201,6 +233,8 @@ const ProfilePage: React.FC = () => {
                 type="password"
                 value={passwordForm.confirmPassword}
                 onChange={(e) => setPasswordForm({...passwordForm, confirmPassword: e.target.value})}
+                autoComplete="new-password"
+                maxLength={128}
                 required
               />
             </div>
