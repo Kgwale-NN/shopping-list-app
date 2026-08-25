@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { type ShoppingListItem } from '../../types/types'
+import FormField from '../ui/FormField'
 import styles from './AddListForm.module.css'
 
 interface AddListFormProps {
@@ -61,27 +62,25 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
       <div className={styles['form-card']}>
         <h2>Add New Shopping List</h2>
         <form onSubmit={handleSubmit}>
-          <div className={styles['form-group']}>
-            <label>Name *</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Enter shopping list name"
-              required
-            />
-          </div>
+          <FormField
+            label="Name *"
+            className={styles['form-group']}
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter shopping list name"
+            required
+          />
 
-          <div className={styles['form-group']}>
-            <label>Quantity *</label>
-            <input
-              type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(Number(e.target.value))}
-              min="1"
-              required
-            />
-          </div>
+          <FormField
+            label="Quantity *"
+            className={styles['form-group']}
+            type="number"
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+            min="1"
+            required
+          />
 
           <div className={styles['form-group']}>
             <label>Category *</label>

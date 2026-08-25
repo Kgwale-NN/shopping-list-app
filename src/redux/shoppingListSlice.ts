@@ -1,16 +1,6 @@
 import { createSlice, type PayloadAction} from "@reduxjs/toolkit";
-
-interface ShoppingListItem{
-
-    id: string,
-    name: string,
-    quantity: number,
-    notes?:string,
-    category:string,
-    image?:string,
-    userId:string,
-    dateAdded: string
-}
+import type { ShoppingListItem } from "../types/types";
+import { filterByName, sortItems } from "../utils/shoppingList";
 
 interface ShoppingListState{
 
@@ -81,13 +71,7 @@ const shoppingListSlice = createSlice ({
     // Filter shopping lists
 
     filterShoppingLists: (state) => {
-      if (state.searchQuery) {
-        state.filteredItems = state.items.filter(item =>
-          item.name.toLowerCase().includes(state.searchQuery.toLowerCase())
-        );
-      } else {
-        state.filteredItems = state.items;
-      }
+      state.filteredItems = filterByName(state.items, state.searchQuery);
     },
 
     // Set sort option
@@ -99,20 +83,7 @@ const shoppingListSlice = createSlice ({
     // Sort shopping lists
 
     sortShoppingLists: (state) => {
-      switch (state.sortBy) {
-        case 'name':
-          state.filteredItems.sort((a, b) => a.name.localeCompare(b.name));
-          break;
-        case 'category':
-          state.filteredItems.sort((a, b) => a.category.localeCompare(b.category));
-          break;
-        case 'date':
-          state.filteredItems.sort((a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime());
-          break;
-        default:
-          break;
-      }
-
+      state.filteredItems = sortItems(state.filteredItems, state.sortBy);
     },
 
     // Set loading state

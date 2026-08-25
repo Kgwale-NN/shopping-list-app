@@ -1,15 +1,5 @@
 import { createSlice , type PayloadAction } from "@reduxjs/toolkit";
-
-// Define the user
-
-interface User{
-
-    id: string,
-    email: string,
-    name: string,
-    surname: string,
-    cellNumber: string
-}
+import type { User } from "../types/types";
 
 // Define authentication state type
 
