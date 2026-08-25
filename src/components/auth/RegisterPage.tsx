@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAppDispatch } from '../../redux/hooks'
 import { setUser, setToken, setAuthenticated } from '../../redux/authSlice'
+import { signUp } from '../../services/authService'
+import { validateCellNumber, validateEmail, validateName, validatePassword } from '../../utils/validation'
 import styles from './RegisterPage.module.css'
 
 export const RegisterPage: React.FC = () => {
@@ -25,29 +27,24 @@ export const RegisterPage: React.FC = () => {
       return
     }
 
-    
-    if (!email.includes('@') || !email.includes('.')) {
-      setError('Please enter a valid email address')
-      return
-    }
+    const validationError =
+      validateName(name, 'Name') ??
+      validateName(surname, 'Surname') ??
+      validateEmail(email) ??
+      validateCellNumber(cellNumber) ??
+      validatePassword(password)
 
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters')
+    if (validationError) {
+      setError(validationError)
       return
     }
 
     try {
 
-      const mockUser = {
-        id: Date.now().toString(),
-        email: email,
-        name: name,
-        surname: surname,
-        cellNumber: cellNumber
-      }
+      const session = await signUp({ email, password, name, surname, cellNumber })
 
-      dispatch(setUser(mockUser))
-      dispatch(setToken('mock-token'))
+      dispatch(setUser(session.user))
+      dispatch(setToken(session.token))
       dispatch(setAuthenticated(true))
       navigate('/home')
     } catch {
@@ -74,6 +71,7 @@ export const RegisterPage: React.FC = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter your name"
+              maxLength={100}
             />
           </div>
 
@@ -84,6 +82,7 @@ export const RegisterPage: React.FC = () => {
               value={surname}
               onChange={(e) => setSurname(e.target.value)}
               placeholder="Enter your surname"
+              maxLength={100}
             />
           </div>
 
@@ -94,6 +93,8 @@ export const RegisterPage: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
+              autoComplete="email"
+              maxLength={100}
             />
           </div>
 
@@ -104,6 +105,7 @@ export const RegisterPage: React.FC = () => {
               value={cellNumber}
               onChange={(e) => setCellNumber(e.target.value)}
               placeholder="Enter your cell number"
+              maxLength={20}
             />
           </div>
 
@@ -114,6 +116,8 @@ export const RegisterPage: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
+              autoComplete="new-password"
+              maxLength={128}
             />
           </div>
 

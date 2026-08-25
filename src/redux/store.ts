@@ -12,7 +12,10 @@ const store = configureStore({
         auth: authReducer,
         profile: profileReducer,
         shoppingList: shoppingListReducer
-    }
+    },
+    // Keep the state (including the auth token) out of the Redux devtools
+    // extension in production builds.
+    devTools: import.meta.env.DEV
 })
 
 // Export types for use in hooks

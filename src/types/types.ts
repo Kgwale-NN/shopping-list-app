@@ -4,7 +4,6 @@ export interface User {
   name: string;
   surname: string;
   cellNumber: string;
-  password?: string;
 }
 
 export interface LoginCredentials {
