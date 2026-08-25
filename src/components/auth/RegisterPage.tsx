@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAppDispatch } from '../../redux/hooks'
 import { setUser, setToken, setAuthenticated } from '../../redux/authSlice'
+import { userApi } from '../../api'
+import type { RegisterData } from '../../types/types'
 import styles from './RegisterPage.module.css'
 
 export const RegisterPage: React.FC = () => {
@@ -38,16 +40,17 @@ export const RegisterPage: React.FC = () => {
 
     try {
 
-      const mockUser = {
-        id: Date.now().toString(),
+      const userData: RegisterData = {
         email: email,
+        password,
         name: name,
         surname: surname,
         cellNumber: cellNumber
       }
+      const user = await userApi.register(userData)
 
-      dispatch(setUser(mockUser))
-      dispatch(setToken('mock-token'))
+      dispatch(setUser(user))
+      dispatch(setToken('json-server-session'))
       dispatch(setAuthenticated(true))
       navigate('/home')
     } catch {

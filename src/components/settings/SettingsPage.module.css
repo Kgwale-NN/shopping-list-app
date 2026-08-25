@@ -105,14 +105,42 @@
   color: #6b7280;
 }
 
+.item-icon-destructive {
+  background-color: #fef2f2;
+  color: #ef4444;
+}
+
+.item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 .item-label {
   color: #1f2937;
   font-size: 1rem;
   font-weight: 500;
 }
 
+.item-label-destructive {
+  color: #ef4444;
+}
+
+.item-sublabel {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
 .item-arrow {
   color: #9ca3af;
+}
+
+.settings-item-destructive {
+  color: #ef4444;
+}
+
+.settings-item-destructive:hover {
+  background-color: #fef2f2;
 }
 
 .dialog-overlay {

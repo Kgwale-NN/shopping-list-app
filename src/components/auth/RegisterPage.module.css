@@ -23,7 +23,7 @@
 .register-card h2 {
   text-align: center;
   margin-bottom: 1.5rem;
-  color: #FDE12D;
+  color: #FDFFFC;
 }
 
 .error-message {
@@ -42,7 +42,7 @@
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #6b7289;
+  color: #FDFFFC;
   font-weight: 500;
 }
 

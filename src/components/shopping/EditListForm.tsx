@@ -1,18 +1,19 @@
 import React, { useState } from 'react'
 import { type ShoppingListItem } from '../../types/types'
-import styles from './AddListForm.module.css'
+import styles from './EditListForm.module.css'
 
-interface AddListFormProps {
-  onAdd: (item: Partial<ShoppingListItem>) => void
+interface EditListFormProps {
+  shoppingList: ShoppingListItem
+  onUpdate: (id: string, item: Partial<ShoppingListItem>) => void
   onCancel: () => void
 }
 
-const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
-  const [name, setName] = useState('')
-  const [quantity, setQuantity] = useState(1)
-  const [notes, setNotes] = useState('')
-  const [category, setCategory] = useState('Food')
-  const [image, setImage] = useState('')
+const EditListForm: React.FC<EditListFormProps> = ({ shoppingList, onUpdate, onCancel }) => {
+  const [name, setName] = useState(shoppingList.name)
+  const [quantity, setQuantity] = useState(shoppingList.quantity)
+  const [notes, setNotes] = useState(shoppingList.notes || '')
+  const [category, setCategory] = useState(shoppingList.category)
+  const [image, setImage] = useState(shoppingList.image || '')
 
   const categories = ['Food', 'Electronics', 'Clothing', 'Home', 'Other']
 
@@ -24,7 +25,7 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
       return
     }
 
-    const newItem: Partial<ShoppingListItem> = {
+    const updatedItem: Partial<ShoppingListItem> = {
       name,
       quantity,
       notes,
@@ -32,14 +33,7 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
       image
     }
 
-    onAdd(newItem)
-    
-    // Reset form
-    setName('')
-    setQuantity(1)
-    setNotes('')
-    setCategory('Food')
-    setImage('')
+    onUpdate(shoppingList.id, updatedItem)
   }
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,10 +47,14 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
     }
   }
 
+  const handleRemoveImage = () => {
+    setImage('')
+  }
+
   return (
     <div className={styles['form-container']}>
       <div className={styles['form-card']}>
-        <h2>Add New Shopping List</h2>
+        <h2>Edit Shopping List</h2>
         <form onSubmit={handleSubmit}>
           <div className={styles['form-group']}>
             <label>Name *</label>
@@ -115,6 +113,13 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
             {image && (
               <div className={styles['image-preview']}>
                 <img src={image} alt="Preview" />
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  className={styles['remove-image-button']}
+                >
+                  Remove Image
+                </button>
               </div>
             )}
           </div>
@@ -124,7 +129,7 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
               Cancel
             </button>
             <button type="submit" className={styles['submit-button']}>
-              Add List
+              Update List
             </button>
           </div>
         </form>
@@ -133,4 +138,4 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
   )
 }
 
-export default AddListForm
+export default EditListForm

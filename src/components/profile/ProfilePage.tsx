@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { setUpdateProfile } from '../../redux/profileSlice'
+import { setUser } from '../../redux/authSlice'
+import { userApi } from '../../api'
 import { ArrowLeft } from 'lucide-react'
 import styles from './ProfilePage.module.css'
 
@@ -35,7 +37,7 @@ const ProfilePage: React.FC = () => {
     }
   }
 
-  const handleProfileUpdate = (e: React.FormEvent) => {
+  const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
     
     // Update the user profile
@@ -47,9 +49,15 @@ const ProfilePage: React.FC = () => {
       cellNumber: editForm.cellNumber,
     }
 
-    dispatch(setUpdateProfile(updatedProfile))
-    setIsEditing(false)
-    setMessage('Profile updated successfully!')
+    try {
+      const savedUser = await userApi.updateProfile(updatedProfile.id, updatedProfile)
+      dispatch(setUser(savedUser))
+      dispatch(setUpdateProfile(savedUser))
+      setIsEditing(false)
+      setMessage('Profile updated successfully!')
+    } catch {
+      setMessage('Unable to update profile. Please try again.')
+    }
     
     setTimeout(() => setMessage(''), 3000)
   }

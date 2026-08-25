@@ -1,60 +1,55 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { logout, setAuthenticated } from '../../redux/authSlice'
+import { useAppSelector } from '../../redux/hooks'
 import { Settings } from 'lucide-react'
 import ShoppingListCard from './ShoppingListCard'
 import AddListForm from './AddListForm'
+import EditListForm from './EditListForm'
+import { shoppingListApi } from '../../api'
 import type { ShoppingListItem } from '../../types/types'
 import styles from './HomePage.module.css'
 
-const yesterday = new Date(Date.now() - 86400000).toISOString()
-
 const HomePage: React.FC = () => {
   const navigate = useNavigate()
-  const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.auth.user)
   const [searchParams, setSearchParams] = useSearchParams()
   const [showAddForm, setShowAddForm] = useState(false)
+  const [showEditForm, setShowEditForm] = useState(false)
+  const [editingItem, setEditingItem] = useState<ShoppingListItem | null>(null)
 
   // Get search and sort from URL
   const searchQuery = searchParams.get('search') || ''
   const sortBy = searchParams.get('sort') || 'date'
 
-  // Mock shopping list data (will be replaced with Redux state)
-  const [shoppingLists, setShoppingLists] = useState<ShoppingListItem[]>([
-    {
-      id: '1',
-      name: 'Groceries',
-      quantity: 5,
-      notes: 'Weekly grocery shopping',
-      category: 'Food',
-      userId: user?.id || '1',
-      dateAdded: new Date().toISOString()
-    },
-    {
-      id: '2',
-      name: 'Electronics',
-      quantity: 2,
-      notes: 'Need new headphones and charger',
-      category: 'Electronics',
-      userId: user?.id || '1',
-      dateAdded: new Date().toISOString()
-    },
-    {
-      id: '3',
-      name: 'Clothing',
-      quantity: 3,
-      notes: 'Need new clothes for winter',
-      category: 'Clothing',
-      userId: user?.id || '1',
-      dateAdded: yesterday // Yesterday
+  // Shopping list data from API
+  const [shoppingLists, setShoppingLists] = useState<ShoppingListItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  // Load shopping lists from API
+  useEffect(() => {
+    const loadShoppingLists = async () => {
+      try {
+        setLoading(true)
+        const data = await shoppingListApi.getAll(user?.id || '1')
+        setShoppingLists(data)
+        setError('')
+      } catch (err) {
+        setError('Failed to load shopping lists')
+        console.error('Error loading shopping lists:', err)
+      } finally {
+        setLoading(false)
+      }
     }
-  ])
+
+    if (user?.id) {
+      loadShoppingLists()
+    }
+  }, [user?.id])
 
   // Filter and sort shopping lists
   const filteredAndSortedLists = useMemo(() => {
-    let filtered = shoppingLists
+    let filtered = [...shoppingLists]
 
     // Apply search filter
     if (searchQuery) {
@@ -81,25 +76,74 @@ const HomePage: React.FC = () => {
     return filtered
   }, [shoppingLists, searchQuery, sortBy])
 
-  const handleLogout = () => {
-    dispatch(logout())
-    dispatch(setAuthenticated(false))
-    navigate('/login')
-  }
-
   const handleEdit = (id: string) => {
-    console.log('Edit shopping list:', id)
-    // Will implement edit functionality later
+    const item = shoppingLists.find(list => list.id === id)
+    if (item) {
+      setEditingItem(item)
+      setShowEditForm(true)
+    }
   }
 
-  const handleDelete = (id: string) => {
-    console.log('Delete shopping list:', id)
-    // Will implement delete functionality later
+  const handleUpdate = async (id: string, updatedItem: Partial<ShoppingListItem>) => {
+    try {
+      // Remove image data for API call
+      const { image, ...itemData } = updatedItem
+      
+      const updatedList = await shoppingListApi.update(id, itemData)
+      
+      // Add the image back locally
+      const updatedListWithImage = {
+        ...updatedList,
+        image: image || ''
+      }
+      
+      setShoppingLists(shoppingLists.map(item => 
+        item.id === id ? updatedListWithImage : item
+      ))
+      setShowEditForm(false)
+      setEditingItem(null)
+      setError('')
+    } catch (err) {
+      setError('Failed to update shopping list')
+      console.error('Error updating shopping list:', err)
+    }
   }
 
-  const handleAddList = (newList: ShoppingListItem) => {
-    setShoppingLists([...shoppingLists, newList])
-    setShowAddForm(false)
+  const handleDelete = async (id: string) => {
+    try {
+      await shoppingListApi.delete(id)
+      setShoppingLists(shoppingLists.filter(item => item.id !== id))
+    } catch (err) {
+      setError('Failed to delete shopping list')
+      console.error('Error deleting shopping list:', err)
+    }
+  }
+
+  const handleAddList = async (newList: Partial<ShoppingListItem>) => {
+    try {
+      // Remove image data for API call (JSON Server doesn't handle large base64 well)
+      const { image, ...listData } = newList
+      
+      const listWithUserId = {
+        ...listData,
+        userId: user?.id || '1',
+        dateAdded: new Date().toISOString()
+      }
+      const createdList = await shoppingListApi.create(listWithUserId)
+      
+      // Add the image back locally for display
+      const createdListWithImage = {
+        ...createdList,
+        image: image || ''
+      }
+      
+      setShoppingLists([...shoppingLists, createdListWithImage])
+      setShowAddForm(false)
+      setError('')
+    } catch (err) {
+      setError('Failed to add shopping list. Images will be stored locally only.')
+      console.error('Error adding shopping list:', err)
+    }
   }
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -153,27 +197,50 @@ const HomePage: React.FC = () => {
         </button>
       </div>
 
-      <div className={styles['shopping-lists-grid']}>
-        {filteredAndSortedLists.length > 0 ? (
-          filteredAndSortedLists.map((list) => (
-            <ShoppingListCard
-              key={list.id}
-              shoppingList={list}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
-          ))
-        ) : (
-          <div className={styles['empty-state']}>
-            <p>No shopping lists found. {searchQuery ? 'Try a different search term.' : 'Create your first list!'}</p>
-          </div>
-        )}
-      </div>
+      {error && (
+        <div className={styles['error-message']}>
+          {error}
+        </div>
+      )}
+
+      {loading ? (
+        <div className={styles['loading-state']}>
+          <p>Loading shopping lists...</p>
+        </div>
+      ) : (
+        <div className={styles['shopping-lists-grid']}>
+          {filteredAndSortedLists.length > 0 ? (
+            filteredAndSortedLists.map((list) => (
+              <ShoppingListCard
+                key={list.id}
+                shoppingList={list}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            ))
+          ) : (
+            <div className={styles['empty-state']}>
+              <p>No shopping lists found. {searchQuery ? 'Try a different search term.' : 'Create your first list!'}</p>
+            </div>
+          )}
+        </div>
+      )}
 
       {showAddForm && (
         <AddListForm
           onAdd={handleAddList}
           onCancel={() => setShowAddForm(false)}
+        />
+      )}
+
+      {showEditForm && editingItem && (
+        <EditListForm
+          shoppingList={editingItem}
+          onUpdate={handleUpdate}
+          onCancel={() => {
+            setShowEditForm(false)
+            setEditingItem(null)
+          }}
         />
       )}
     </div>

@@ -2,6 +2,7 @@ import React,{useState} from 'react'
 import {useNavigate,Link} from 'react-router-dom'
 import {useAppDispatch} from '../../redux/hooks'
 import { setUser, setToken, setAuthenticated } from '../../redux/authSlice'
+import { userApi } from '../../api'
 import styles from './LoginPage.module.css'
 
 export const LoginPage:React.FC = () => {
@@ -25,19 +26,15 @@ export const LoginPage:React.FC = () => {
 
         try{
 
-            // I need to replace this with he actual API call.
+            const user = await userApi.login(email, password)
 
-            const mockUser = {
-
-                id: '1',
-                email: email,
-                name: 'Test',
-                surname: 'User',
-                cellNumber : '1234567890'
+            if (!user) {
+              setError('Invalid email or password')
+              return
             }
 
-            dispatch(setUser(mockUser))
-            dispatch(setToken('mock-token'))
+            dispatch(setUser(user))
+            dispatch(setToken('json-server-session'))
             dispatch(setAuthenticated(true))
             navigate('/home')
         }catch{
