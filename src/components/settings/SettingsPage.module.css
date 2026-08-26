@@ -1,12 +1,12 @@
 .settings-container {
   min-height: 100vh;
-  background-color: #f3f4f6;
+  background-color: #FAF9F6;
   padding: 20px;
   box-sizing: border-box;
 }
 
 .settings-card {
-  background: white;
+  background: #FAF9F6;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   max-width: 600px;
@@ -20,12 +20,12 @@
   justify-content: space-between;
   padding: 1rem 1.5rem;
   border-bottom: 1px solid #e5e7eb;
-  background-color: white;
+  background-color: #FAF9F6;
 }
 
 .settings-header h1 {
   margin: 0;
-  color: #1f2937;
+  color: #007f5f;
   font-size: 1.25rem;
   font-weight: 600;
 }
@@ -44,7 +44,7 @@
 }
 
 .back-button:hover {
-  background-color: #f3f4f6;
+  background-color: #007F5F;
   color: #374151;
 }
 
@@ -63,7 +63,7 @@
 .section-title {
   margin: 0 0 0.75rem 0;
   padding: 0 1.5rem;
-  color: #6b7280;
+  color: #007f5f;
   font-size: 0.875rem;
   font-weight: 500;
   text-transform: uppercase;
@@ -159,7 +159,7 @@
 }
 
 .dialog {
-  background: white;
+  background: #FAF9F6;
   border-radius: 8px;
   padding: 1.5rem;
   max-width: 400px;
@@ -169,13 +169,13 @@
 
 .dialog h2 {
   margin: 0 0 0.75rem 0;
-  color: #1f2937;
+  color: #007F5F;
   font-size: 1.25rem;
 }
 
 .dialog p {
   margin: 0 0 1.5rem 0;
-  color: #6b7280;
+  color: #6b7289;
   font-size: 1rem;
 }
 
@@ -197,8 +197,9 @@
 }
 
 .dialog-cancel {
-  background-color: #f3f4f6;
+  background-color: #e5e7eb;
   color: #1f2937;
+  border-radius: 8px;
 }
 
 .dialog-cancel:hover {
@@ -208,6 +209,8 @@
 .dialog-confirm {
   background-color: #ef4444;
   color: white;
+  border-radius: 8px;
+
 }
 
 .dialog-confirm:hover {

@@ -1,6 +1,6 @@
 .home-container {
   min-height: 100vh;
-  background-color: #2D2D34;
+  background-color: #FAF9F6;
   padding: 20px;
   box-sizing: border-box;
 }
@@ -14,6 +14,9 @@
   background: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: 'Alkatra', cursive;
+  font-weight: 600;
+  
 }
 
 .home-header h1 {
@@ -48,6 +51,23 @@
   background-color: #dc2626;
 }
 
+.favorite-button {
+  padding: 0.5rem;
+  background-color: transparent;
+  color: #6b7280;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.favorite-button:hover {
+  background-color: #f3f4f6;
+  color: #db2777;
+}
+
 .settings-button {
   padding: 0.5rem;
   background-color: transparent;
@@ -67,9 +87,11 @@
 }
 
 .search-bar {
-  margin-bottom: 1.5rem;
+  margin-bottom: 0;
   display: flex;
   gap: 1rem;
+    width: 50%;
+
 }
 
 .search-input {
@@ -78,23 +100,24 @@
   padding-left: 0.75rem;
   padding-right: 0.75rem;
   border: 1px solid #d1d5db;
-  border-radius: 8px;
+  border-radius:  999px;
   font-size: 1rem;
   box-sizing: border-box;
 }
 
 .search-input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: #6b7289;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .sort-select {
-  padding: 0.75rem;
+  padding: 0.65rem 0.75rem;
   border: 1px solid #d1d5db;
-  border-radius: 8px;
+  border-radius: 999px;
   font-size: 1rem;
   background-color: white;
+  color: #6b7289;
   cursor: pointer;
 }
 
@@ -128,8 +151,8 @@
 .add-button {
   width: 100%;
   padding: 1rem;
-  background-color: #FDE12D;
-  color: black;
+  background-color: #007f5f;
+  color: #FAF9F6;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
@@ -139,7 +162,7 @@
 }
 
 .add-button:hover {
-  background-color:#F0EC57;
+  background-color:#007f5f;
 }
 
 .shopping-lists-grid {

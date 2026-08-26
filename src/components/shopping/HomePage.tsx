@@ -1,13 +1,14 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAppSelector } from '../../redux/hooks'
-import { Settings } from 'lucide-react'
+import { Heart, Settings } from 'lucide-react'
 import ShoppingListCard from './ShoppingListCard'
 import AddListForm from './AddListForm'
 import EditListForm from './EditListForm'
 import { shoppingListApi } from '../../api'
 import type { ShoppingListItem } from '../../types/types'
 import styles from './HomePage.module.css'
+
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate()
@@ -16,6 +17,7 @@ const HomePage: React.FC = () => {
   const [showAddForm, setShowAddForm] = useState(false)
   const [showEditForm, setShowEditForm] = useState(false)
   const [editingItem, setEditingItem] = useState<ShoppingListItem | null>(null)
+  const [showFavoritesOnly , setShowFavoritesOnly] = useState(false)
 
   // Get search and sort from URL
   const searchQuery = searchParams.get('search') || ''
@@ -51,6 +53,12 @@ const HomePage: React.FC = () => {
   const filteredAndSortedLists = useMemo(() => {
     let filtered = [...shoppingLists]
 
+    if(showFavoritesOnly) {
+
+      filtered = filtered.filter(item => item.isFavorite)
+
+    }
+
     // Apply search filter
     if (searchQuery) {
       filtered = filtered.filter(item =>
@@ -74,7 +82,7 @@ const HomePage: React.FC = () => {
     }
 
     return filtered
-  }, [shoppingLists, searchQuery, sortBy])
+  }, [shoppingLists, searchQuery, sortBy,showFavoritesOnly])
 
   const handleEdit = (id: string) => {
     const item = shoppingLists.find(list => list.id === id)
@@ -121,27 +129,20 @@ const HomePage: React.FC = () => {
 
   const handleAddList = async (newList: Partial<ShoppingListItem>) => {
     try {
-      // Remove image data for API call (JSON Server doesn't handle large base64 well)
-      const { image, ...listData } = newList
       
       const listWithUserId = {
-        ...listData,
+        ...newList,
         userId: user?.id || '1',
         dateAdded: new Date().toISOString()
       }
       const createdList = await shoppingListApi.create(listWithUserId)
+
       
-      // Add the image back locally for display
-      const createdListWithImage = {
-        ...createdList,
-        image: image || ''
-      }
-      
-      setShoppingLists([...shoppingLists, createdListWithImage])
+      setShoppingLists([...shoppingLists, createdList])
       setShowAddForm(false)
       setError('')
     } catch (err) {
-      setError('Failed to add shopping list. Images will be stored locally only.')
+      setError('Failed to add shopping list.')
       console.error('Error adding shopping list:', err)
     }
   }
@@ -161,17 +162,14 @@ const HomePage: React.FC = () => {
   }
 
   return (
-    <div className={styles['home-container']}>
-      <div className={styles['home-header']}>
-        <h1>Shopping Lists</h1>
-        <div className={styles['user-info']}>
-          <span>Welcome, {user?.name}</span>
-          <button onClick={() => navigate('/settings')} className={styles['settings-button']}>
-            <Settings size={24} />
-          </button>
-        </div>
-      </div>
 
+    <div className={styles['home-container']}>
+
+      <div className={styles['home-header']}>
+
+        <h1>Shopping Lists</h1>
+
+        
       <div className={styles['search-bar']}>
         <input
           type="text"
@@ -180,7 +178,10 @@ const HomePage: React.FC = () => {
           onChange={handleSearchChange}
           className={styles['search-input']}
         />
-        <select
+
+        {shoppingLists.length > 1 && (
+
+         <select
           value={sortBy}
           onChange={handleSortChange}
           className={styles['sort-select']}
@@ -189,7 +190,35 @@ const HomePage: React.FC = () => {
           <option value="name">Sort by Name</option>
           <option value="category">Sort by Category</option>
         </select>
+
+        )}
+
       </div>
+
+        <div className={styles['user-info']}>
+          <span>Welcome, {user?.name}</span>
+
+          <button
+           onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+           className={styles['favorite-button']}
+           aria-label="Show favorite shopping lists"
+           title="Show favorite shopping lists"
+      >
+
+      <Heart
+      size={24}
+      fill={showFavoritesOnly ? 'currentColor' : 'none'}
+      />
+
+           </button>
+
+          <button onClick={() => navigate('/settings')} className={styles['settings-button']}>
+            <Settings size={24} />
+          </button>
+        </div>
+        
+      </div>
+
 
       <div className={styles['add-button-container']}>
         <button onClick={() => setShowAddForm(true)} className={styles['add-button']}>

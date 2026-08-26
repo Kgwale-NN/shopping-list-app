@@ -1,5 +1,5 @@
 .card {
-  background: #2D2D34;
+  background: #FAF9F6;
   border-radius: 8px;
   box-shadow: 0 2px 4px #6b7289;
   overflow: hidden;
@@ -28,7 +28,7 @@
 
 .card-title {
   margin: 0 0 0.75rem 0;
-  color: #ffffff;
+  color: #6b7289;
   font-size: 1.1rem;
   font-weight: 600;
 }
@@ -70,7 +70,7 @@
 .edit-button {
   flex: 1;
   padding: 0.5rem;
-  background-color: #FDE12D;
+  background-color: #007F5F;
   color: #2D2D34;
   border: none;
   border-radius: 4px;
@@ -80,7 +80,7 @@
 }
 
 .edit-button:hover {
-  background-color: #F0EC57;
+  background-color: #007f5f;
 }
 
 .delete-button {

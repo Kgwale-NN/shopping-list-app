@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { type ShoppingListItem } from '../../types/types'
 import styles from './AddListForm.module.css'
+import { ImageAPI } from '../../api'
 
 interface AddListFormProps {
   onAdd: (item: Partial<ShoppingListItem>) => void
@@ -12,17 +13,18 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
   const [quantity, setQuantity] = useState(1)
   const [notes, setNotes] = useState('')
   const [category, setCategory] = useState('Food')
-  const [image, setImage] = useState('')
 
   const categories = ['Food', 'Electronics', 'Clothing', 'Home', 'Other']
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!name) {
       alert('Please enter a name for the shopping list')
       return
     }
+
+    const image = await ImageAPI.searchImage(name)
 
     const newItem: Partial<ShoppingListItem> = {
       name,
@@ -39,19 +41,9 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
     setQuantity(1)
     setNotes('')
     setCategory('Food')
-    setImage('')
   }
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setImage(reader.result as string)
-      }
-      reader.readAsDataURL(file)
-    }
-  }
+
 
   return (
     <div className={styles['form-container']}>
@@ -105,19 +97,6 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
             />
           </div>
 
-          <div className={styles['form-group']}>
-            <label>Image</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-            />
-            {image && (
-              <div className={styles['image-preview']}>
-                <img src={image} alt="Preview" />
-              </div>
-            )}
-          </div>
 
           <div className={styles['form-actions']}>
             <button type="button" onClick={onCancel} className={styles['cancel-button']}>

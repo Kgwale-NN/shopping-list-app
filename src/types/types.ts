@@ -29,4 +29,5 @@ export interface ShoppingListItem {
   image?: string;
   userId: string;
   dateAdded: string;
+  isFavorite?: boolean
 }

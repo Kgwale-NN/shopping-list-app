@@ -67,4 +67,36 @@ export const shoppingListApi = {
   },
 }
 
+
+export const ImageAPI = {
+
+  searchImage: async (itemName: string): Promise<string> => {
+
+     try{
+
+      const response = await axios.get('https://api.pexels.com/v1/search' , {
+
+        headers: {
+
+          Authorization: import.meta.env.VITE_PEXELS_API_KEY
+        },
+
+        params: {
+
+          query: itemName,
+          per_page: 1,
+          orientation: 'square'
+        },
+      })
+
+      return response.data.photos?.[0]?.src?.medium?? ''
+     }catch(error){
+
+      console.error('unable to fetch an image from pexels: ' , error)
+      return ''
+     }
+
+  },
+
+}
 export default api

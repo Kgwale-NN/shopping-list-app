@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: #FAF9F6;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,7 +14,7 @@
 }
 
 .form-card {
-  background: #2D2D34;
+  background: #FAF9F6;
   border-radius: 8px;
   padding: 2rem;
   padding-left: 2rem;
@@ -29,7 +29,7 @@
 
 .form-card h2 {
   margin: 0 0 1.5rem 0;
-  color: #FDE12D;
+  color: #007F5F;
   text-align: center;
 }
 
@@ -40,7 +40,7 @@
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #6b7289;
+  color: #007F5F;
   font-weight: 500;
 }
 
@@ -110,7 +110,7 @@
 .submit-button {
   flex: 1;
   padding: 0.75rem;
-  background-color: #FDE12D;
+  background-color: #007F5F;
   color: #2D2D34;
   border: none;
   border-radius: 4px;
@@ -121,7 +121,7 @@
 }
 
 .submit-button:hover {
-  background-color: #F0EC57;
+  background-color: #007F5F;
 }
 
 /* Mobile - 320px */

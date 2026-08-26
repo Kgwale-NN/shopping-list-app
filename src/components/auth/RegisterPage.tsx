@@ -5,6 +5,7 @@ import { setUser, setToken, setAuthenticated } from '../../redux/authSlice'
 import { userApi } from '../../api'
 import type { RegisterData } from '../../types/types'
 import styles from './RegisterPage.module.css'
+import {User} from 'lucide-react'
 
 export const RegisterPage: React.FC = () => {
 
@@ -64,6 +65,12 @@ export const RegisterPage: React.FC = () => {
     <div className={styles['register-container']}>
 
       <div className={styles['register-card']}>
+
+        <div className={styles.avatar}>
+
+          <User size={34} color="#FAF9F6"/>
+          
+        </div>
 
         <h2>Register</h2>
         {error && <div className={styles['error-message']}>{error}</div>}

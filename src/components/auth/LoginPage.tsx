@@ -4,6 +4,7 @@ import {useAppDispatch} from '../../redux/hooks'
 import { setUser, setToken, setAuthenticated } from '../../redux/authSlice'
 import { userApi } from '../../api'
 import styles from './LoginPage.module.css'
+import {User} from 'lucide-react'
 
 export const LoginPage:React.FC = () => {
 
@@ -50,6 +51,12 @@ export const LoginPage:React.FC = () => {
 
 
       <div className={styles['login-card']}>
+
+        <div className={styles.avatar}>
+
+          <User size={34} color="#FAF9F6" />
+
+        </div>
 
       <h2>Login</h2>
       {error && <div className={styles['error-message']}>{error}</div>}
