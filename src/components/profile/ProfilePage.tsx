@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { setUpdateProfile } from '../../redux/profileSlice'
 import { setUser } from '../../redux/authSlice'
 import { userApi } from '../../api'
-import { ArrowLeft, User } from 'lucide-react'
+import { ArrowLeft} from 'lucide-react'
 import styles from './ProfilePage.module.css'
 import bcrypt from 'bcryptjs'
 

@@ -54,7 +54,7 @@ const HomePage: React.FC = () => {
     if (user?.id) {
       loadShoppingLists()
     }
-  }, [user?.id])
+  }, [user?.id , dispatch])
 
   // Filter and sort shopping lists
   const filteredAndSortedLists = useMemo(() => {
