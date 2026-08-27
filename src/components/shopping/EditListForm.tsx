@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { type ShoppingListItem } from '../../types/types'
 import styles from './EditListForm.module.css'
+import { ImageAPI } from '../../api'
 
 interface EditListFormProps {
   shoppingList: ShoppingListItem
@@ -13,17 +14,19 @@ const EditListForm: React.FC<EditListFormProps> = ({ shoppingList, onUpdate, onC
   const [quantity, setQuantity] = useState(shoppingList.quantity)
   const [notes, setNotes] = useState(shoppingList.notes || '')
   const [category, setCategory] = useState(shoppingList.category)
-  const [image, setImage] = useState(shoppingList.image || '')
 
   const categories = ['Food', 'Electronics', 'Clothing', 'Home', 'Other']
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     if (!name) {
       alert('Please enter a name for the shopping list')
       return
     }
+
+    const image = name === shoppingList.name
+    ? shoppingList.image || '' : await ImageAPI.searchImage(name)
 
     const updatedItem: Partial<ShoppingListItem> = {
       name,
@@ -36,20 +39,6 @@ const EditListForm: React.FC<EditListFormProps> = ({ shoppingList, onUpdate, onC
     onUpdate(shoppingList.id, updatedItem)
   }
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setImage(reader.result as string)
-      }
-      reader.readAsDataURL(file)
-    }
-  }
-
-  const handleRemoveImage = () => {
-    setImage('')
-  }
 
   return (
     <div className={styles['form-container']}>
@@ -101,27 +90,6 @@ const EditListForm: React.FC<EditListFormProps> = ({ shoppingList, onUpdate, onC
               placeholder="Add any notes (optional)"
               rows={3}
             />
-          </div>
-
-          <div className={styles['form-group']}>
-            <label>Image</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-            />
-            {image && (
-              <div className={styles['image-preview']}>
-                <img src={image} alt="Preview" />
-                <button
-                  type="button"
-                  onClick={handleRemoveImage}
-                  className={styles['remove-image-button']}
-                >
-                  Remove Image
-                </button>
-              </div>
-            )}
           </div>
 
           <div className={styles['form-actions']}>
