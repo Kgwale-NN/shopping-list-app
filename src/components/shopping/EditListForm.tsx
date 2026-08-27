@@ -5,7 +5,7 @@ import { ImageAPI } from '../../api'
 
 interface EditListFormProps {
   shoppingList: ShoppingListItem
-  onUpdate: (id: string, item: Partial<ShoppingListItem>) => void
+  onUpdate: (id: string, item: Partial<ShoppingListItem>) => Promise<void>
   onCancel: () => void
 }
 
@@ -14,6 +14,7 @@ const EditListForm: React.FC<EditListFormProps> = ({ shoppingList, onUpdate, onC
   const [quantity, setQuantity] = useState(shoppingList.quantity)
   const [notes, setNotes] = useState(shoppingList.notes || '')
   const [category, setCategory] = useState(shoppingList.category)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const categories = ['Food', 'Electronics', 'Clothing', 'Home', 'Other']
 
@@ -26,7 +27,12 @@ const EditListForm: React.FC<EditListFormProps> = ({ shoppingList, onUpdate, onC
     }
 
     const image = name === shoppingList.name
+
+  
+    
     ? shoppingList.image || '' : await ImageAPI.searchImage(name)
+
+      setIsSubmitting(true)
 
     const updatedItem: Partial<ShoppingListItem> = {
       name,
@@ -36,7 +42,9 @@ const EditListForm: React.FC<EditListFormProps> = ({ shoppingList, onUpdate, onC
       image
     }
 
-    onUpdate(shoppingList.id, updatedItem)
+    await onUpdate(shoppingList.id, updatedItem)
+    setIsSubmitting(false)
+
   }
 
 
@@ -96,9 +104,13 @@ const EditListForm: React.FC<EditListFormProps> = ({ shoppingList, onUpdate, onC
             <button type="button" onClick={onCancel} className={styles['cancel-button']}>
               Cancel
             </button>
-            <button type="submit" className={styles['submit-button']}>
-              Update List
-            </button>
+          <button
+  type="submit"
+  className={styles['submit-button']}
+  disabled={isSubmitting}
+>
+  {isSubmitting ? 'Updating item...' : 'Update List'}
+</button>
           </div>
         </form>
       </div>
