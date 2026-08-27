@@ -33,6 +33,8 @@ const HomePage: React.FC = () => {
   const [error, setError] = useState('')
   const [shareMessage,setShareMessage] = useState('')
 
+  const [itemMessage,setItemMessage] = useState('')
+
   // Load shopping lists from API
   useEffect(() => {
     const loadShoppingLists = async () => {
@@ -160,6 +162,9 @@ const HomePage: React.FC = () => {
       setShowEditForm(false)
       setEditingItem(null)
       setError('')
+      setItemMessage('Item updated successfully!')
+      setTimeout(() => setItemMessage(''), 3000)
+
     } catch (error) {
       setError('Failed to update shopping list')
       console.error('Error updating shopping list:', error)
@@ -170,6 +175,9 @@ const HomePage: React.FC = () => {
     try {
       await shoppingListApi.delete(id)
      dispatch(deleteShoppingList(id))
+
+     setItemMessage('Item deleted successfully!')
+setTimeout(() => setItemMessage(''), 3000)
     } catch (error) {
       setError('Failed to delete shopping list')
       console.error('Error deleting shopping list:', error)
@@ -190,6 +198,10 @@ const HomePage: React.FC = () => {
       dispatch(setShoppingList(createdList))
       setShowAddForm(false)
       setError('')
+      
+      setItemMessage('Item added successfully!')
+      setTimeout(() => setItemMessage(''), 3000)
+
     } catch (error) {
       setError('Failed to add shopping list.')
       console.error('Error adding shopping list:', error)
@@ -295,6 +307,12 @@ const HomePage: React.FC = () => {
       {shareMessage && (
   <div className={styles['success-message']}>
     {shareMessage}
+  </div>
+)}
+
+{itemMessage && (
+  <div className={styles['success-message']}>
+    {itemMessage}
   </div>
 )}
 
