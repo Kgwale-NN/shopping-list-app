@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useAppSelector } from '../../redux/hooks'
+import { useAppDispatch,useAppSelector } from '../../redux/hooks'
 import { Heart, Settings } from 'lucide-react'
 import ShoppingListCard from './ShoppingListCard'
 import AddListForm from './AddListForm'
@@ -8,10 +8,14 @@ import EditListForm from './EditListForm'
 import { shoppingListApi } from '../../api'
 import type { ShoppingListItem } from '../../types/types'
 import styles from './HomePage.module.css'
+import { setShoppingLists } from '../../redux/shoppingListSlice'
+
+
 
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
   const user = useAppSelector((state) => state.auth.user)
   const [searchParams, setSearchParams] = useSearchParams()
   const [showAddForm, setShowAddForm] = useState(false)
@@ -24,7 +28,7 @@ const HomePage: React.FC = () => {
   const sortBy = searchParams.get('sort') || 'date'
 
   // Shopping list data from API
-  const [shoppingLists, setShoppingLists] = useState<ShoppingListItem[]>([])
+  const shoppingLists = useAppSelector((state) => state.shoppingList.items)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -34,7 +38,7 @@ const HomePage: React.FC = () => {
       try {
         setLoading(true)
         const data = await shoppingListApi.getAll(user?.id || '1')
-        setShoppingLists(data)
+        dispatch( setShoppingLists(data)git status)
         setError('')
       } catch (err) {
         setError('Failed to load shopping lists')

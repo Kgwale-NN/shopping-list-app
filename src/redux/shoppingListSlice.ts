@@ -40,6 +40,12 @@ const shoppingListSlice = createSlice ({
     initialState,
     reducers :{
 
+      setShoppingLists:(state,action:PayloadAction<ShoppingListItem[]>) =>{
+
+            state.items = action.payload
+            state.filteredItems = action.payload
+      },
+
         setShoppingList: (state,action:PayloadAction<ShoppingListItem>) =>{
 
             state.items.push(action.payload)
@@ -134,6 +140,7 @@ const shoppingListSlice = createSlice ({
 // Export actions and reducer
 
 export const {
+  setShoppingLists,
   setShoppingList,
   updateShoppingList,
   deleteShoppingList,
