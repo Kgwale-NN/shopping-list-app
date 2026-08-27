@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useAppDispatch,useAppSelector } from '../../redux/hooks'
-import { Heart, Settings } from 'lucide-react'
+import { Heart, Settings , Share2} from 'lucide-react'
 import ShoppingListCard from './ShoppingListCard'
 import AddListForm from './AddListForm'
 import EditListForm from './EditListForm'
@@ -31,6 +31,7 @@ const HomePage: React.FC = () => {
   const shoppingLists = useAppSelector((state) => state.shoppingList.items)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [shareMessage,setShareMessage] = useState('')
 
   // Load shopping lists from API
   useEffect(() => {
@@ -88,6 +89,58 @@ const HomePage: React.FC = () => {
     return filtered
   }, [shoppingLists, searchQuery, sortBy,showFavoritesOnly])
 
+  const handleShare = async () => {
+
+    if(shoppingLists.length === 0){
+
+      setShareMessage('Add an item before sharing your list')
+      return
+
+    }
+
+    const listText = shoppingLists
+
+    .map(
+
+      (item) => 
+
+        `${item.name} - Qty: ${item.quantity} (${item.category})${
+
+          item.notes ? `\nNotes: ${item.notes}` : ''
+        }`
+    )
+
+    .join('\n\n')
+
+    const shareData = {
+
+      title: 'My Shopping list',
+      text: listText
+    }
+
+    try{
+
+      if(navigator.share){
+
+        await navigator.share(shareData)
+        setShareMessage('Shopping list shared successfully!')
+      }else{
+
+        await navigator.clipboard.writeText(listText)
+        setShareMessage('Shopping list copied to clipboard!')
+
+      }
+    }catch(error){
+
+      if((error as DOMException).name !== 'AbortError'){
+
+        setShareMessage('Unable to share the shopping list.')
+      }
+    }
+
+    setTimeout(() => setShareMessage(''), 3000)
+  }
+
   const handleEdit = (id: string) => {
     const item = shoppingLists.find(list => list.id === id)
     if (item) {
@@ -115,19 +168,19 @@ const HomePage: React.FC = () => {
       setShowEditForm(false)
       setEditingItem(null)
       setError('')
-    } catch (err) {
+    } catch (error) {
       setError('Failed to update shopping list')
-      console.error('Error updating shopping list:', err)
+      console.error('Error updating shopping list:', error)
     }
   }
 
   const handleDelete = async (id: string) => {
     try {
       await shoppingListApi.delete(id)
-     deleteShoppingList(id)
-    } catch (err) {
+     dispatch(deleteShoppingList(id))
+    } catch (error) {
       setError('Failed to delete shopping list')
-      console.error('Error deleting shopping list:', err)
+      console.error('Error deleting shopping list:', error)
     }
   }
 
@@ -142,12 +195,12 @@ const HomePage: React.FC = () => {
       const createdList = await shoppingListApi.create(listWithUserId)
 
       
-      dispatch(setShoppingLists([createdList]))
+      dispatch(setShoppingList(createdList))
       setShowAddForm(false)
       setError('')
-    } catch (err) {
+    } catch (error) {
       setError('Failed to add shopping list.')
-      console.error('Error adding shopping list:', err)
+      console.error('Error adding shopping list:', error)
     }
   }
 
@@ -219,6 +272,17 @@ const HomePage: React.FC = () => {
           <button onClick={() => navigate('/settings')} className={styles['settings-button']}>
             <Settings size={24} />
           </button>
+
+          <button onClick={handleShare}
+          className={styles['share-button']}
+          aria-label="Share Shopping List"
+          title="Share Shopping List"
+          
+          >
+
+            <Share2 size={24}/>
+
+          </button>
         </div>
         
       </div>
@@ -235,6 +299,12 @@ const HomePage: React.FC = () => {
           {error}
         </div>
       )}
+
+      {shareMessage && (
+  <div className={styles['success-message']}>
+    {shareMessage}
+  </div>
+)}
 
       {loading ? (
         <div className={styles['loading-state']}>

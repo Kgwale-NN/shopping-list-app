@@ -1,6 +1,5 @@
 {
   "users": [
-
     {
       "email": "kgwalemomedi@gmail.com",
       "password": "$2b$10$MsiLRisDyo/AJWsdjOXDEO4Ufnv.upPCHKh3S/L6GvDbtxezwmghe",
@@ -66,6 +65,36 @@
       "userId": "1",
       "dateAdded": "2026-08-25T08:50:46.542Z",
       "id": "pFS0zETxPvA"
+    },
+    {
+      "name": "Tomato",
+      "quantity": 1,
+      "notes": "",
+      "category": "Food",
+      "image": "https://images.pexels.com/photos/14920999/pexels-photo-14920999.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "userId": "RCAIBuS4fpo",
+      "dateAdded": "2026-08-27T09:49:13.314Z",
+      "id": "ggwCltAGNrM"
+    },
+    {
+      "name": "burgar",
+      "quantity": 1,
+      "notes": "",
+      "category": "Food",
+      "image": "https://images.pexels.com/photos/16241419/pexels-photo-16241419.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "userId": "RCAIBuS4fpo",
+      "dateAdded": "2026-08-27T09:51:37.702Z",
+      "id": "MZ4eiLKtXLc"
+    },
+    {
+      "name": "mae",
+      "quantity": 1,
+      "notes": "",
+      "category": "Food",
+      "image": "https://images.pexels.com/photos/18951864/pexels-photo-18951864.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "userId": "RCAIBuS4fpo",
+      "dateAdded": "2026-08-27T11:33:35.513Z",
+      "id": "TUq2q71ukuo"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
