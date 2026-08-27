@@ -4,7 +4,7 @@ import styles from './AddListForm.module.css'
 import { ImageAPI } from '../../api'
 
 interface AddListFormProps {
-  onAdd: (item: Partial<ShoppingListItem>) => void
+  onAdd: (item: Partial<ShoppingListItem>) => Promise<void>
   onCancel: () => void
 }
 
@@ -13,6 +13,7 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
   const [quantity, setQuantity] = useState(1)
   const [notes, setNotes] = useState('')
   const [category, setCategory] = useState('Food')
+  const[isSubmitting, setIsSubmitting] = useState(false)
 
   const categories = ['Food', 'Electronics', 'Clothing', 'Home', 'Other']
 
@@ -24,6 +25,7 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
       return
     }
 
+    setIsSubmitting(true)
     const image = await ImageAPI.searchImage(name)
 
     const newItem: Partial<ShoppingListItem> = {
@@ -34,7 +36,9 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
       image
     }
 
-    onAdd(newItem)
+    await onAdd(newItem)
+
+    setIsSubmitting(false)
     
     // Reset form
     setName('')
@@ -102,8 +106,8 @@ const AddListForm: React.FC<AddListFormProps> = ({ onAdd, onCancel }) => {
             <button type="button" onClick={onCancel} className={styles['cancel-button']}>
               Cancel
             </button>
-            <button type="submit" className={styles['submit-button']}>
-              Add List
+            <button type="submit" className={styles['submit-button']} disabled={isSubmitting}>
+               {isSubmitting ? 'Finding image...' : 'Add List'}
             </button>
           </div>
         </form>
