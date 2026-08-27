@@ -65,6 +65,28 @@
       "userId": "1",
       "dateAdded": "2026-08-25T08:50:46.542Z",
       "id": "pFS0zETxPvA"
+    },
+    {
+      "name": "Iphone",
+      "quantity": 1,
+      "notes": "",
+      "category": "Other",
+      "image": "https://images.pexels.com/photos/18311092/pexels-photo-18311092.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "userId": "RCAIBuS4fpo",
+      "dateAdded": "2026-08-27T14:25:20.773Z",
+      "id": "wLsRHbe-1fI",
+      "isFavorite": false
+    },
+    {
+      "name": "Iphone 16",
+      "quantity": 1,
+      "notes": "",
+      "category": "Other",
+      "image": "https://images.pexels.com/photos/14979020/pexels-photo-14979020.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "userId": "RCAIBuS4fpo",
+      "dateAdded": "2026-08-27T14:25:54.350Z",
+      "id": "TWfWQzwNWQM",
+      "isFavorite": true
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

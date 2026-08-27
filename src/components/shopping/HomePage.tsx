@@ -151,6 +151,31 @@ const HomePage: React.FC = () => {
     }
   }
 
+  const handleToggleFavorite = async (id: string) => {
+  const item = shoppingLists.find((list) => list.id === id)
+
+  if (!item) {
+    return
+  }
+
+  try {
+    const updatedList = await shoppingListApi.update(id, {
+      isFavorite: !item.isFavorite,
+    })
+
+    dispatch(updateShoppingList(updatedList))
+    setItemMessage(
+      updatedList.isFavorite
+        ? 'Added to favourites!'
+        : 'Removed from favourites!'
+    )
+    setTimeout(() => setItemMessage(''), 3000)
+  } catch (error) {
+    setError('Unable to update favourite status')
+    console.error('Error updating favourite:', error)
+  }
+}
+
   const handleUpdate = async (id: string, updatedItem: Partial<ShoppingListItem>) => {
     try {
   
@@ -329,6 +354,7 @@ setTimeout(() => setItemMessage(''), 3000)
                 shoppingList={list}
                 onEdit={handleEdit}
                 onDelete={handleDelete}
+                onToggleFavorite={handleToggleFavorite}
               />
             ))
           ) : (

@@ -1,14 +1,16 @@
 import React from 'react'
 import { type ShoppingListItem } from '../../types/types'
 import styles from './ShoppingListCard.module.css'
+import { Heart } from 'lucide-react'
 
 interface ShoppingListCardProps {
   shoppingList: ShoppingListItem
   onEdit: (id: string) => void
   onDelete: (id: string) => void
+  onToggleFavorite: (id: string) => void
 }
 
-const ShoppingListCard: React.FC<ShoppingListCardProps> = ({ shoppingList, onEdit, onDelete }) => {
+const ShoppingListCard: React.FC<ShoppingListCardProps> = ({ shoppingList, onEdit, onDelete,onToggleFavorite }) => {
   return (
     <div className={styles['card']}>
       {shoppingList.image && (
@@ -18,6 +20,25 @@ const ShoppingListCard: React.FC<ShoppingListCardProps> = ({ shoppingList, onEdi
       )}
       <div className={styles['card-content']}>
         <h3 className={styles['card-title']}>{shoppingList.name}</h3>
+                  <button
+  onClick={() => onToggleFavorite(shoppingList.id)}
+  className={styles['favorite-button']}
+  aria-label={
+    shoppingList.isFavorite
+      ? 'Remove from favourites'
+      : 'Add to favourites'
+  }
+  title={
+    shoppingList.isFavorite
+      ? 'Remove from favourites'
+      : 'Add to favourites'
+  }
+>
+  <Heart
+    size={20}
+    fill={shoppingList.isFavorite ? 'currentColor' : 'none'}
+  />
+</button>
         <div className={styles['card-details']}>
           <span className={styles['card-category']}>{shoppingList.category}</span>
           <span className={styles['card-quantity']}>Qty: {shoppingList.quantity}</span>
@@ -29,6 +50,8 @@ const ShoppingListCard: React.FC<ShoppingListCardProps> = ({ shoppingList, onEdi
           <button onClick={ () => onEdit(shoppingList.id)} className={styles['edit-button']}>
             Edit
           </button>
+
+ 
           <button onClick={() => onDelete(shoppingList.id)} className={styles['delete-button']}>
             Delete
           </button>
