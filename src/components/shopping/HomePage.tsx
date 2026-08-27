@@ -8,7 +8,7 @@ import EditListForm from './EditListForm'
 import { shoppingListApi } from '../../api'
 import type { ShoppingListItem } from '../../types/types'
 import styles from './HomePage.module.css'
-import { setShoppingLists } from '../../redux/shoppingListSlice'
+import { setShoppingLists,setShoppingList,updateShoppingList,deleteShoppingList} from '../../redux/shoppingListSlice'
 
 
 
@@ -38,7 +38,7 @@ const HomePage: React.FC = () => {
       try {
         setLoading(true)
         const data = await shoppingListApi.getAll(user?.id || '1')
-        dispatch( setShoppingLists(data)git status)
+        dispatch( setShoppingLists(data))
         setError('')
       } catch (err) {
         setError('Failed to load shopping lists')
@@ -109,9 +109,9 @@ const HomePage: React.FC = () => {
         image: image || ''
       }
       
-      setShoppingLists(shoppingLists.map(item => 
-        item.id === id ? updatedListWithImage : item
-      ))
+      
+
+      dispatch(updateShoppingList(updatedListWithImage))
       setShowEditForm(false)
       setEditingItem(null)
       setError('')
@@ -124,7 +124,7 @@ const HomePage: React.FC = () => {
   const handleDelete = async (id: string) => {
     try {
       await shoppingListApi.delete(id)
-      setShoppingLists(shoppingLists.filter(item => item.id !== id))
+     deleteShoppingList(id)
     } catch (err) {
       setError('Failed to delete shopping list')
       console.error('Error deleting shopping list:', err)
@@ -142,7 +142,7 @@ const HomePage: React.FC = () => {
       const createdList = await shoppingListApi.create(listWithUserId)
 
       
-      setShoppingLists([...shoppingLists, createdList])
+      dispatch(setShoppingLists([createdList]))
       setShowAddForm(false)
       setError('')
     } catch (err) {
