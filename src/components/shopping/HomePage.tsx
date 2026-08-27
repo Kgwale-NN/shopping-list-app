@@ -151,20 +151,12 @@ const HomePage: React.FC = () => {
 
   const handleUpdate = async (id: string, updatedItem: Partial<ShoppingListItem>) => {
     try {
-      // Remove image data for API call
-      const { image, ...itemData } = updatedItem
+  
       
-      const updatedList = await shoppingListApi.update(id, itemData)
-      
-      // Add the image back locally
-      const updatedListWithImage = {
-        ...updatedList,
-        image: image || ''
-      }
-      
-      
-
-      dispatch(updateShoppingList(updatedListWithImage))
+      const updatedList = await shoppingListApi.update(id, updatedItem)
+  
+    
+      dispatch(updateShoppingList(updatedList))
       setShowEditForm(false)
       setEditingItem(null)
       setError('')
