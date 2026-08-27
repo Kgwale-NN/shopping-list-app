@@ -14,9 +14,9 @@ const api = axios.create({
 
 // User API
 export const userApi = {
-  login: async (email: string, password: string) => {
+  login: async (email: string) => {
     const response = await api.get('/users', {
-      params: { email, password }
+      params: { email}
     })
     return response.data[0] // Returns the user if found
   },

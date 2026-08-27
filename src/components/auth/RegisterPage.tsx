@@ -6,6 +6,7 @@ import { userApi } from '../../api'
 import type { RegisterData } from '../../types/types'
 import styles from './RegisterPage.module.css'
 import {User} from 'lucide-react'
+import bcrypt from 'bcryptjs'
 
 export const RegisterPage: React.FC = () => {
 
@@ -39,11 +40,15 @@ export const RegisterPage: React.FC = () => {
       return
     }
 
+    // create the hidden password
+
+    const hashedPassword = await bcrypt.hash(password,10)
+
     try {
 
       const userData: RegisterData = {
         email: email,
-        password,
+        password: hashedPassword,
         name: name,
         surname: surname,
         cellNumber: cellNumber

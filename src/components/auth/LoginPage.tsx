@@ -5,6 +5,7 @@ import { setUser, setToken, setAuthenticated } from '../../redux/authSlice'
 import { userApi } from '../../api'
 import styles from './LoginPage.module.css'
 import {User} from 'lucide-react'
+import bcrypt from 'bcryptjs'
 
 export const LoginPage:React.FC = () => {
 
@@ -27,9 +28,9 @@ export const LoginPage:React.FC = () => {
 
         try{
 
-            const user = await userApi.login(email, password)
+            const user = await userApi.login(email)
 
-            if (!user) {
+            if (!user || !(await bcrypt.compare(password,user.password))) {
               setError('Invalid email or password')
               return
             }

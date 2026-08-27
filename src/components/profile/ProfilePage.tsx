@@ -4,8 +4,9 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { setUpdateProfile } from '../../redux/profileSlice'
 import { setUser } from '../../redux/authSlice'
 import { userApi } from '../../api'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, User } from 'lucide-react'
 import styles from './ProfilePage.module.css'
+import bcrypt from 'bcryptjs'
 
 const ProfilePage: React.FC = () => {
   const navigate = useNavigate()
@@ -62,7 +63,7 @@ const ProfilePage: React.FC = () => {
     setTimeout(() => setMessage(''), 3000)
   }
 
-  const handlePasswordUpdate = (e: React.FormEvent) => {
+  const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
@@ -75,15 +76,52 @@ const ProfilePage: React.FC = () => {
       return
     }
 
-    // In real app, you would verify current password first
+    if(!user){
+
+      setMessage('Unable to find your user account')
+      return
+
+    }
+
+    try{
+
+      const savedUser = await userApi.getProfile(user.id)
+
+      const currentPasswordIsCorrect = await bcrypt.compare(
+
+        passwordForm.currentPassword,
+        savedUser.password
+      )
+
+      if(!currentPasswordIsCorrect){
+
+        setMessage('Current password is incorrect')
+        return
+
+      }
+
+      const hashedPassword = await bcrypt.hash(passwordForm.newPassword,10)
+
+        await userApi.updateProfile(user.id ,{
+
+          password: hashedPassword
+          
+        })
+
+        
     setMessage('Password updated successfully!')
     setPasswordForm({
       currentPassword: '',
       newPassword: '',
       confirmPassword: '',
     })
-    
-    setTimeout(() => setMessage(''), 3000)
+          
+    }catch{
+
+      setMessage('Unable to update password. Please try again.')
+    }
+
+     setTimeout(() => setMessage(''), 3000)
   }
 
   const handleBackClick = () => {
