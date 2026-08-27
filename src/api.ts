@@ -21,6 +21,18 @@ export const userApi = {
     return response.data[0] // Returns the user if found
   },
 
+  emailExists: async (email: string): Promise<boolean> => {
+
+
+    const response = await api.get('/users' , {
+
+      params: {email}
+
+    })
+
+    return response.data.length > 0
+  },
+
   register: async (userData: RegisterData) => {
     const response = await api.post('/users', userData)
     return response.data

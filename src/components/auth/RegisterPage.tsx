@@ -40,6 +40,17 @@ export const RegisterPage: React.FC = () => {
       return
     }
 
+    const normalizedEmail = email.trim().toLowerCase()
+
+    const emailAlreadyExists = await userApi.emailExists(normalizedEmail)
+
+    if(emailAlreadyExists){
+
+      setError('An account with this email already exists')
+      return
+
+    }
+
     // create the hidden password
 
     const hashedPassword = await bcrypt.hash(password,10)
@@ -47,7 +58,7 @@ export const RegisterPage: React.FC = () => {
     try {
 
       const userData: RegisterData = {
-        email: email,
+        email: normalizedEmail,
         password: hashedPassword,
         name: name,
         surname: surname,
