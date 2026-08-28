@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../redux/hooks'
 import { setUpdateProfile } from '../../redux/profileSlice'
 import { setUser } from '../../redux/authSlice'
 import { userApi } from '../../api'
-import { ArrowLeft} from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import styles from './ProfilePage.module.css'
 import bcrypt from 'bcryptjs'
 
@@ -40,7 +40,7 @@ const ProfilePage: React.FC = () => {
 
   const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     // Update the user profile
     const updatedProfile = {
       id: user?.id || '1',
@@ -53,19 +53,35 @@ const ProfilePage: React.FC = () => {
     try {
       const savedUser = await userApi.updateProfile(updatedProfile.id, updatedProfile)
       dispatch(setUser(savedUser))
+      const sessionUser = {
+        id: savedUser.id,
+        email: savedUser.email,
+        name: savedUser.name,
+        surname: savedUser.surname,
+        cellNumber: savedUser.cellNumber,
+      }
+
+      localStorage.setItem(
+        'shopping-list-auth',
+        JSON.stringify({
+          user: sessionUser,
+          isAuthenticated: true,
+          token: 'json-server-session',
+        })
+      )
       dispatch(setUpdateProfile(savedUser))
       setIsEditing(false)
       setMessage('Profile updated successfully!')
     } catch {
       setMessage('Unable to update profile. Please try again.')
     }
-    
+
     setTimeout(() => setMessage(''), 3000)
   }
 
   const handlePasswordUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       setMessage('Passwords do not match')
       return
@@ -76,14 +92,14 @@ const ProfilePage: React.FC = () => {
       return
     }
 
-    if(!user){
+    if (!user) {
 
       setMessage('Unable to find your user account')
       return
 
     }
 
-    try{
+    try {
 
       const savedUser = await userApi.getProfile(user.id)
 
@@ -93,35 +109,35 @@ const ProfilePage: React.FC = () => {
         savedUser.password
       )
 
-      if(!currentPasswordIsCorrect){
+      if (!currentPasswordIsCorrect) {
 
         setMessage('Current password is incorrect')
         return
 
       }
 
-      const hashedPassword = await bcrypt.hash(passwordForm.newPassword,10)
+      const hashedPassword = await bcrypt.hash(passwordForm.newPassword, 10)
 
-        await userApi.updateProfile(user.id ,{
+      await userApi.updateProfile(user.id, {
 
-          password: hashedPassword
-          
-        })
+        password: hashedPassword
 
-        
-    setMessage('Password updated successfully!')
-    setPasswordForm({
-      currentPassword: '',
-      newPassword: '',
-      confirmPassword: '',
-    })
-          
-    }catch{
+      })
+
+
+      setMessage('Password updated successfully!')
+      setPasswordForm({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      })
+
+    } catch {
 
       setMessage('Unable to update password. Please try again.')
     }
 
-     setTimeout(() => setMessage(''), 3000)
+    setTimeout(() => setMessage(''), 3000)
   }
 
   const handleBackClick = () => {
@@ -148,8 +164,8 @@ const ProfilePage: React.FC = () => {
         <div className={styles['profile-section']}>
           <div className={styles['section-header']}>
             <h2>Personal Information</h2>
-            <button 
-              onClick={handleEditToggle} 
+            <button
+              onClick={handleEditToggle}
               className={styles['edit-button']}
             >
               {isEditing ? 'Cancel' : 'Edit'}
@@ -163,7 +179,7 @@ const ProfilePage: React.FC = () => {
                 <input
                   type="text"
                   value={editForm.name}
-                  onChange={(e) => setEditForm({...editForm, name: e.target.value})}
+                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                   required
                 />
               </div>
@@ -172,7 +188,7 @@ const ProfilePage: React.FC = () => {
                 <input
                   type="text"
                   value={editForm.surname}
-                  onChange={(e) => setEditForm({...editForm, surname: e.target.value})}
+                  onChange={(e) => setEditForm({ ...editForm, surname: e.target.value })}
                   required
                 />
               </div>
@@ -181,7 +197,7 @@ const ProfilePage: React.FC = () => {
                 <input
                   type="email"
                   value={editForm.email}
-                  onChange={(e) => setEditForm({...editForm, email: e.target.value})}
+                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                   required
                 />
               </div>
@@ -190,7 +206,7 @@ const ProfilePage: React.FC = () => {
                 <input
                   type="tel"
                   value={editForm.cellNumber}
-                  onChange={(e) => setEditForm({...editForm, cellNumber: e.target.value})}
+                  onChange={(e) => setEditForm({ ...editForm, cellNumber: e.target.value })}
                   required
                 />
               </div>
@@ -228,7 +244,7 @@ const ProfilePage: React.FC = () => {
               <input
                 type="password"
                 value={passwordForm.currentPassword}
-                onChange={(e) => setPasswordForm({...passwordForm, currentPassword: e.target.value})}
+                onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
                 required
               />
             </div>
@@ -237,7 +253,7 @@ const ProfilePage: React.FC = () => {
               <input
                 type="password"
                 value={passwordForm.newPassword}
-                onChange={(e) => setPasswordForm({...passwordForm, newPassword: e.target.value})}
+                onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
                 required
               />
             </div>
@@ -246,7 +262,7 @@ const ProfilePage: React.FC = () => {
               <input
                 type="password"
                 value={passwordForm.confirmPassword}
-                onChange={(e) => setPasswordForm({...passwordForm, confirmPassword: e.target.value})}
+                onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
                 required
               />
             </div>

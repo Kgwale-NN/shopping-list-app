@@ -46,6 +46,7 @@ const HomePage: React.FC = () => {
         setError('')
       } catch (err) {
         setError('Failed to load shopping lists')
+        setTimeout(() => setError(''), 3000)
         console.error('Error loading shopping lists:', err)
       } finally {
         setLoading(false)
@@ -96,7 +97,8 @@ const HomePage: React.FC = () => {
 
     if (shoppingLists.length === 0) {
 
-      setShareMessage('Add an item before sharing your list')
+      setError('Add an item before sharing your list')
+      setTimeout(() => setError(''), 3000)
       return
 
     }
@@ -135,7 +137,8 @@ const HomePage: React.FC = () => {
 
       if ((error as DOMException).name !== 'AbortError') {
 
-        setShareMessage('Unable to share the shopping list.')
+        setError('Unable to share the shopping list.')
+        setTimeout(() => setError(''), 3000)
       }
     }
 
@@ -172,6 +175,7 @@ const HomePage: React.FC = () => {
     } catch (error) {
       setError('Unable to update favourite status')
       console.error('Error updating favourite:', error)
+      setTimeout(() => setError(''), 3000)
     }
   }
 
@@ -192,6 +196,7 @@ const HomePage: React.FC = () => {
     } catch (error) {
       setError('Failed to update shopping list')
       console.error('Error updating shopping list:', error)
+      setTimeout(() => setError(''), 3000)
     }
   }
 
@@ -204,6 +209,7 @@ const HomePage: React.FC = () => {
       setTimeout(() => setItemMessage(''), 3000)
     } catch (error) {
       setError('Failed to delete shopping list')
+      setTimeout(() => setError(''), 3000)
       console.error('Error deleting shopping list:', error)
     }
   }
@@ -222,12 +228,12 @@ const HomePage: React.FC = () => {
       dispatch(setShoppingList(createdList))
       setShowAddForm(false)
       setError('')
-
       setItemMessage('Item added successfully!')
       setTimeout(() => setItemMessage(''), 3000)
 
     } catch (error) {
       setError('Failed to add shopping list.')
+      setTimeout(() => setError(''), 3000)
       console.error('Error adding shopping list:', error)
     }
   }

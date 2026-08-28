@@ -5,7 +5,7 @@ import { setUser, setToken, setAuthenticated } from '../../redux/authSlice'
 import { userApi } from '../../api'
 import type { RegisterData } from '../../types/types'
 import styles from './RegisterPage.module.css'
-import {User} from 'lucide-react'
+import { User } from 'lucide-react'
 import bcrypt from 'bcryptjs'
 
 export const RegisterPage: React.FC = () => {
@@ -29,7 +29,7 @@ export const RegisterPage: React.FC = () => {
       return
     }
 
-    
+
     if (!email.includes('@') || !email.includes('.')) {
       setError('Please enter a valid email address')
       return
@@ -44,7 +44,7 @@ export const RegisterPage: React.FC = () => {
 
     const emailAlreadyExists = await userApi.emailExists(normalizedEmail)
 
-    if(emailAlreadyExists){
+    if (emailAlreadyExists) {
 
       setError('An account with this email already exists')
       return
@@ -53,7 +53,7 @@ export const RegisterPage: React.FC = () => {
 
     // create the hidden password
 
-    const hashedPassword = await bcrypt.hash(password,10)
+    const hashedPassword = await bcrypt.hash(password, 10)
 
     try {
 
@@ -66,7 +66,23 @@ export const RegisterPage: React.FC = () => {
       }
       const user = await userApi.register(userData)
 
-      dispatch(setUser(user))
+      const sessionUser = {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        surname: user.surname,
+        cellNumber: user.cellNumber,
+      }
+
+      const authSession = {
+        user: sessionUser,
+        isAuthenticated: true,
+        token: 'json-server-session',
+      }
+
+      localStorage.setItem('shopping-list-auth', JSON.stringify(authSession))
+
+      dispatch(setUser(sessionUser))
       dispatch(setToken('json-server-session'))
       dispatch(setAuthenticated(true))
       navigate('/home')
@@ -84,8 +100,8 @@ export const RegisterPage: React.FC = () => {
 
         <div className={styles.avatar}>
 
-          <User size={34} color="#FAF9F6"/>
-          
+          <User size={34} color="#FAF9F6" />
+
         </div>
 
         <h2>Register</h2>

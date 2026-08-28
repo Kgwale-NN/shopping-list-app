@@ -40,6 +40,7 @@ const SettingsPage: React.FC = () => {
   }
 
   const handleLogoutConfirm = () => {
+    localStorage.removeItem('shopping-list-auth')
     dispatch(logout())
     dispatch(setAuthenticated(false))
     navigate('/login')

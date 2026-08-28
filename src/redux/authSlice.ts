@@ -1,78 +1,97 @@
-import { createSlice , type PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 // Define the user
 
-interface User{
+interface User {
 
-    id: string,
-    email: string,
-    name: string,
-    surname: string,
-    cellNumber: string
+   id: string,
+   email: string,
+   name: string,
+   surname: string,
+   cellNumber: string
 }
 
 // Define authentication state type
 
- interface AuthState{
+interface AuthState {
 
-    user: User | null,
-    isAuthenticated: boolean,
-    token: string
+   user: User | null,
+   isAuthenticated: boolean,
+   token: string
 
- }
+}
 
- // define the initial state
+// define the initial state
 
- const initialState: AuthState = {
+const getInitialAuthState = (): AuthState => {
+   const savedAuth = localStorage.getItem('shopping-list-auth')
 
-    user : null,
-    isAuthenticated : false,
-    token: ''
- }
+   if (!savedAuth) {
+      return {
+         user: null,
+         isAuthenticated: false,
+         token: '',
+      }
+   }
 
- const authSlice = createSlice({
+   try {
+      return JSON.parse(savedAuth) as AuthState
+   } catch {
+      localStorage.removeItem('shopping-list-auth')
 
-    name:'auth',
-    initialState,
-    reducers :{
+      return {
+         user: null,
+         isAuthenticated: false,
+         token: '',
+      }
+   }
+}
 
-        // set user data
+const initialState: AuthState = getInitialAuthState()
 
-        setUser :(state , action:PayloadAction<User>) =>{
+const authSlice = createSlice({
 
-            state.user = action.payload
-        },
+   name: 'auth',
+   initialState,
+   reducers: {
 
-        // set authentication token
+      // set user data
 
-        setToken: (state , action:PayloadAction<string>) =>{
+      setUser: (state, action: PayloadAction<User>) => {
+
+         state.user = action.payload
+      },
+
+      // set authentication token
+
+      setToken: (state, action: PayloadAction<string>) => {
 
          state.token = action.payload
 
-        },
+      },
 
-        // set authentication status
+      // set authentication status
 
-        setAuthenticated: (state , action:PayloadAction<boolean>) =>{
+      setAuthenticated: (state, action: PayloadAction<boolean>) => {
 
          state.isAuthenticated = action.payload
 
-        },
+      },
 
-        // log user out
+      // log user out
 
-        logout: (state) =>{
+      logout: (state) => {
 
-           state.user = null
-           state.isAuthenticated =false
-           state.token = ''
+         state.user = null
+         state.isAuthenticated = false
+         state.token = ''
 
-        }
+      }
 
 
-    }
- })
+   }
+})
 
- export const {setUser,setToken,setAuthenticated,logout} = authSlice.actions
- export default authSlice.reducer
+export const { setUser, setToken, setAuthenticated, logout } = authSlice.actions
+export default authSlice.reducer
 
