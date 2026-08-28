@@ -153,3 +153,37 @@
     height: 180px;
   }
 }
+
+.card-title,
+.card-notes {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 360px) {
+  .card-image {
+    height: 140px;
+  }
+
+  .card-details {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .card-actions {
+    flex-direction: row;
+    gap: 0.4rem;
+  }
+
+  .edit-button,
+  .delete-button {
+    min-width: 0;
+    padding: 0.6rem 0.3rem;
+    font-size: 0.9rem;
+  }
+
+  .favorite-button {
+    flex: 0 0 auto;
+    padding: 0.4rem;
+  }
+}

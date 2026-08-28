@@ -222,89 +222,71 @@
   margin: 0;
 }
 
-/* Mobile - 320px */
-@media (max-width: 320px) {
+@media (max-width: 900px) {
+  .home-container {
+    padding: 12px;
+  }
+
   .home-header {
     flex-direction: column;
+    align-items: stretch;
     gap: 1rem;
     padding: 1rem;
   }
 
   .home-header h1 {
-    font-size: 1.25rem;
-  }
-
-  .user-info {
-    flex-direction: column;
-    gap: 0.5rem;
+    text-align: center;
   }
 
   .search-bar {
-    flex-direction: column;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .search-input {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .sort-select {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .user-info {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .user-info span {
+    width: 100%;
+    text-align: center;
   }
 
   .shopping-lists-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
 
-/* Small Mobile - 480px */
-@media (min-width: 321px) and (max-width: 480px) {
+@media (max-width: 360px) {
+  .home-container {
+    padding: 10px;
+  }
+
   .home-header {
-    padding: 1rem 1.5rem;
+    padding: 0.75rem;
   }
 
-  .user-info {
-    flex-direction: row;
-    gap: 0.5rem;
-  }
-
-  .search-bar {
-    flex-direction: column;
-  }
-
-  .shopping-lists-grid {
-    grid-template-columns: 1fr;
+  .home-header h1 {
+    font-size: 1.3rem;
   }
 }
 
-/* Tablet - 768px */
-@media (min-width: 481px) and (max-width: 768px) {
-  .search-bar {
-    flex-direction: row;
-  }
-
+@media (min-width: 600px) and (max-width: 900px) {
   .shopping-lists-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  }
-}
-
-/* Small Desktop - 1024px */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .home-container {
-    padding: 30px;
-  }
-
-  .search-bar {
-    flex-direction: row;
-  }
-
-  .shopping-lists-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  }
-}
-
-/* Large Desktop - 1200px and above */
-@media (min-width: 1025px) {
-  .home-container {
-    padding: 40px;
-  }
-
-  .search-bar {
-    flex-direction: row;
-  }
-
-  .shopping-lists-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
