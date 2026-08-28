@@ -1,14 +1,15 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { useAppDispatch,useAppSelector } from '../../redux/hooks'
-import { Heart, Settings , Share2} from 'lucide-react'
+import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import { Heart, Settings, Share2 } from 'lucide-react'
 import ShoppingListCard from './ShoppingListCard'
 import AddListForm from './AddListForm'
 import EditListForm from './EditListForm'
 import { shoppingListApi } from '../../api'
 import type { ShoppingListItem } from '../../types/types'
 import styles from './HomePage.module.css'
-import { setShoppingLists,setShoppingList,updateShoppingList,deleteShoppingList} from '../../redux/shoppingListSlice'
+import { setShoppingLists, setShoppingList, updateShoppingList, deleteShoppingList } from '../../redux/shoppingListSlice'
+import emptyCartImage from '../../assets/cart (1).png'
 
 
 
@@ -21,7 +22,7 @@ const HomePage: React.FC = () => {
   const [showAddForm, setShowAddForm] = useState(false)
   const [showEditForm, setShowEditForm] = useState(false)
   const [editingItem, setEditingItem] = useState<ShoppingListItem | null>(null)
-  const [showFavoritesOnly , setShowFavoritesOnly] = useState(false)
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
 
   // Get search and sort from URL
   const searchQuery = searchParams.get('search') || ''
@@ -31,9 +32,9 @@ const HomePage: React.FC = () => {
   const shoppingLists = useAppSelector((state) => state.shoppingList.items)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [shareMessage,setShareMessage] = useState('')
+  const [shareMessage, setShareMessage] = useState('')
 
-  const [itemMessage,setItemMessage] = useState('')
+  const [itemMessage, setItemMessage] = useState('')
 
   // Load shopping lists from API
   useEffect(() => {
@@ -41,7 +42,7 @@ const HomePage: React.FC = () => {
       try {
         setLoading(true)
         const data = await shoppingListApi.getAll(user?.id || '1')
-        dispatch( setShoppingLists(data))
+        dispatch(setShoppingLists(data))
         setError('')
       } catch (err) {
         setError('Failed to load shopping lists')
@@ -54,13 +55,13 @@ const HomePage: React.FC = () => {
     if (user?.id) {
       loadShoppingLists()
     }
-  }, [user?.id , dispatch])
+  }, [user?.id, dispatch])
 
   // Filter and sort shopping lists
   const filteredAndSortedLists = useMemo(() => {
     let filtered = [...shoppingLists]
 
-    if(showFavoritesOnly) {
+    if (showFavoritesOnly) {
 
       filtered = filtered.filter(item => item.isFavorite)
 
@@ -89,11 +90,11 @@ const HomePage: React.FC = () => {
     }
 
     return filtered
-  }, [shoppingLists, searchQuery, sortBy,showFavoritesOnly])
+  }, [shoppingLists, searchQuery, sortBy, showFavoritesOnly])
 
   const handleShare = async () => {
 
-    if(shoppingLists.length === 0){
+    if (shoppingLists.length === 0) {
 
       setShareMessage('Add an item before sharing your list')
       return
@@ -102,17 +103,15 @@ const HomePage: React.FC = () => {
 
     const listText = shoppingLists
 
-    .map(
+      .map(
 
-      (item) => 
+        (item) =>
 
-        `${item.name} - Qty: ${item.quantity} (${item.category})${
+          `${item.name} - Qty: ${item.quantity} (${item.category})${item.notes ? `\nNotes: ${item.notes}` : ''
+          }`
+      )
 
-          item.notes ? `\nNotes: ${item.notes}` : ''
-        }`
-    )
-
-    .join('\n\n')
+      .join('\n\n')
 
     const shareData = {
 
@@ -120,21 +119,21 @@ const HomePage: React.FC = () => {
       text: listText
     }
 
-    try{
+    try {
 
-      if(navigator.share){
+      if (navigator.share) {
 
         await navigator.share(shareData)
         setShareMessage('Shopping list shared successfully!')
-      }else{
+      } else {
 
         await navigator.clipboard.writeText(listText)
         setShareMessage('Shopping list copied to clipboard!')
 
       }
-    }catch(error){
+    } catch (error) {
 
-      if((error as DOMException).name !== 'AbortError'){
+      if ((error as DOMException).name !== 'AbortError') {
 
         setShareMessage('Unable to share the shopping list.')
       }
@@ -152,37 +151,37 @@ const HomePage: React.FC = () => {
   }
 
   const handleToggleFavorite = async (id: string) => {
-  const item = shoppingLists.find((list) => list.id === id)
+    const item = shoppingLists.find((list) => list.id === id)
 
-  if (!item) {
-    return
+    if (!item) {
+      return
+    }
+
+    try {
+      const updatedList = await shoppingListApi.update(id, {
+        isFavorite: !item.isFavorite,
+      })
+
+      dispatch(updateShoppingList(updatedList))
+      setItemMessage(
+        updatedList.isFavorite
+          ? 'Added to favourites!'
+          : 'Removed from favourites!'
+      )
+      setTimeout(() => setItemMessage(''), 3000)
+    } catch (error) {
+      setError('Unable to update favourite status')
+      console.error('Error updating favourite:', error)
+    }
   }
-
-  try {
-    const updatedList = await shoppingListApi.update(id, {
-      isFavorite: !item.isFavorite,
-    })
-
-    dispatch(updateShoppingList(updatedList))
-    setItemMessage(
-      updatedList.isFavorite
-        ? 'Added to favourites!'
-        : 'Removed from favourites!'
-    )
-    setTimeout(() => setItemMessage(''), 3000)
-  } catch (error) {
-    setError('Unable to update favourite status')
-    console.error('Error updating favourite:', error)
-  }
-}
 
   const handleUpdate = async (id: string, updatedItem: Partial<ShoppingListItem>) => {
     try {
-  
-      
+
+
       const updatedList = await shoppingListApi.update(id, updatedItem)
-  
-    
+
+
       dispatch(updateShoppingList(updatedList))
       setShowEditForm(false)
       setEditingItem(null)
@@ -199,10 +198,10 @@ const HomePage: React.FC = () => {
   const handleDelete = async (id: string) => {
     try {
       await shoppingListApi.delete(id)
-     dispatch(deleteShoppingList(id))
+      dispatch(deleteShoppingList(id))
 
-     setItemMessage('Item deleted successfully!')
-setTimeout(() => setItemMessage(''), 3000)
+      setItemMessage('Item deleted successfully!')
+      setTimeout(() => setItemMessage(''), 3000)
     } catch (error) {
       setError('Failed to delete shopping list')
       console.error('Error deleting shopping list:', error)
@@ -211,7 +210,7 @@ setTimeout(() => setItemMessage(''), 3000)
 
   const handleAddList = async (newList: Partial<ShoppingListItem>) => {
     try {
-      
+
       const listWithUserId = {
         ...newList,
         userId: user?.id || '1',
@@ -219,11 +218,11 @@ setTimeout(() => setItemMessage(''), 3000)
       }
       const createdList = await shoppingListApi.create(listWithUserId)
 
-      
+
       dispatch(setShoppingList(createdList))
       setShowAddForm(false)
       setError('')
-      
+
       setItemMessage('Item added successfully!')
       setTimeout(() => setItemMessage(''), 3000)
 
@@ -255,65 +254,65 @@ setTimeout(() => setItemMessage(''), 3000)
 
         <h1>Shopping Lists</h1>
 
-        
-      <div className={styles['search-bar']}>
-        <input
-          type="text"
-          placeholder="Search shopping lists..."
-          value={searchQuery}
-          onChange={handleSearchChange}
-          className={styles['search-input']}
-        />
 
-        {shoppingLists.length > 1 && (
+        <div className={styles['search-bar']}>
+          <input
+            type="text"
+            placeholder="Search shopping lists..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className={styles['search-input']}
+          />
 
-         <select
-          value={sortBy}
-          onChange={handleSortChange}
-          className={styles['sort-select']}
-        >
-          <option value="date">Sort by Date</option>
-          <option value="name">Sort by Name</option>
-          <option value="category">Sort by Category</option>
-        </select>
+          {shoppingLists.length > 1 && (
 
-        )}
+            <select
+              value={sortBy}
+              onChange={handleSortChange}
+              className={styles['sort-select']}
+            >
+              <option value="date">Sort by Date</option>
+              <option value="name">Sort by Name</option>
+              <option value="category">Sort by Category</option>
+            </select>
 
-      </div>
+          )}
+
+        </div>
 
         <div className={styles['user-info']}>
           <span>Welcome, {user?.name}</span>
 
           <button
-           onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
-           className={styles['favorite-button']}
-           aria-label="Show favorite shopping lists"
-           title="Show favorite shopping lists"
-      >
+            onClick={() => setShowFavoritesOnly(!showFavoritesOnly)}
+            className={styles['favorite-button']}
+            aria-label="Show favorite shopping lists"
+            title="Show favorite shopping lists"
+          >
 
-      <Heart
-      size={24}
-      fill={showFavoritesOnly ? 'currentColor' : 'none'}
-      />
+            <Heart
+              size={24}
+              fill={showFavoritesOnly ? 'currentColor' : 'none'}
+            />
 
-           </button>
+          </button>
 
           <button onClick={() => navigate('/settings')} className={styles['settings-button']}>
             <Settings size={24} />
           </button>
 
           <button onClick={handleShare}
-          className={styles['share-button']}
-          aria-label="Share Shopping List"
-          title="Share Shopping List"
-          
+            className={styles['share-button']}
+            aria-label="Share Shopping List"
+            title="Share Shopping List"
+
           >
 
-            <Share2 size={24}/>
+            <Share2 size={24} />
 
           </button>
         </div>
-        
+
       </div>
 
 
@@ -330,16 +329,16 @@ setTimeout(() => setItemMessage(''), 3000)
       )}
 
       {shareMessage && (
-  <div className={styles['success-message']}>
-    {shareMessage}
-  </div>
-)}
+        <div className={styles['success-message']}>
+          {shareMessage}
+        </div>
+      )}
 
-{itemMessage && (
-  <div className={styles['success-message']}>
-    {itemMessage}
-  </div>
-)}
+      {itemMessage && (
+        <div className={styles['success-message']}>
+          {itemMessage}
+        </div>
+      )}
 
       {loading ? (
         <div className={styles['loading-state']}>
@@ -359,8 +358,18 @@ setTimeout(() => setItemMessage(''), 3000)
             ))
           ) : (
             <div className={styles['empty-state']}>
-              <p>No shopping lists found. {searchQuery ? 'Try a different search term.' : 'Create your first list!'}</p>
-            </div>
+              {shoppingLists.length === 0 ? (
+                <>
+                  <img
+                    src={emptyCartImage}
+                    alt="Empty shopping cart"
+                    className={styles['empty-state-image']}
+                  />
+                  <p>Your cart is empty. Add your first item!</p>
+                </>
+              ) : (
+                <p>No items match your search. Try a different search term.</p>
+              )}            </div>
           )}
         </div>
       )}
