@@ -222,6 +222,34 @@
   margin: 0;
 }
 
+/* Small Mobile - 480px */
+@media (min-width: 321px) and (max-width: 480px) {
+  .card-image {
+    height: 120px;
+  }
+}
+
+/* Tablet - 768px */
+@media (min-width: 481px) and (max-width: 768px) {
+  .card-image {
+    height: 140px;
+  }
+}
+
+/* Small Desktop - 1024px */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .card-image {
+    height: 160px;
+  }
+}
+
+/* Large Desktop - 1200px and above */
+@media (min-width: 1025px) {
+  .card-image {
+    height: 180px;
+  }
+}
+
 @media (max-width: 900px) {
   .home-container {
     padding: 12px;
