@@ -15,6 +15,14 @@
       "surname": "Kgwale",
       "cellNumber": "0760769987",
       "id": "RCAIBuS4fpo"
+    },
+    {
+      "name": "john ",
+      "surname": "maphuto",
+      "email": "abc@gmail.com",
+      "phoneNumber": "0719581440",
+      "password": "U2FsdGVkX1+WLUbqLztr4ViSbpHOr8iMPmvwzGzmN9s=",
+      "id": "lBwGm-ZMyp4"
     }
   ],
   "shoppingLists": [
@@ -67,26 +75,24 @@
       "id": "pFS0zETxPvA"
     },
     {
-      "name": "Iphone",
+      "name": "nike t shirt",
       "quantity": 1,
       "notes": "",
-      "category": "Other",
-      "image": "https://images.pexels.com/photos/18311092/pexels-photo-18311092.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "category": "Clothing",
+      "image": "https://images.pexels.com/photos/30720847/pexels-photo-30720847.jpeg?auto=compress&cs=tinysrgb&h=350",
       "userId": "RCAIBuS4fpo",
-      "dateAdded": "2026-08-27T14:25:20.773Z",
-      "id": "wLsRHbe-1fI",
-      "isFavorite": false
+      "dateAdded": "2026-08-28T06:10:55.993Z",
+      "id": "a9OQ0J_1peA"
     },
     {
-      "name": "Iphone 16",
+      "name": "adidos",
       "quantity": 1,
       "notes": "",
-      "category": "Other",
-      "image": "https://images.pexels.com/photos/14979020/pexels-photo-14979020.jpeg?auto=compress&cs=tinysrgb&h=350",
+      "category": "Clothing",
+      "image": "https://images.pexels.com/photos/1649675/pexels-photo-1649675.jpeg?auto=compress&cs=tinysrgb&h=350",
       "userId": "RCAIBuS4fpo",
-      "dateAdded": "2026-08-27T14:25:54.350Z",
-      "id": "TWfWQzwNWQM",
-      "isFavorite": false
+      "dateAdded": "2026-08-28T06:11:13.226Z",
+      "id": "7EVysZOaYnc"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

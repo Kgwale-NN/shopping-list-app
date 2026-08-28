@@ -1,4 +1,19 @@
-# React + TypeScript + Vite
+# Shopping List App
+
+## Development
+
+Install dependencies, then start the frontend and mock API together:
+
+```bash
+npm install
+npm run dev:all
+```
+
+The frontend runs on the Vite URL shown in the terminal, and JSON Server runs on `http://localhost:3001`.
+
+To run them separately, use `npm run dev` and `npm run server` in two terminals.
+
+## Vite Template Notes
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
