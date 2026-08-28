@@ -73,27 +73,9 @@
       "userId": "1",
       "dateAdded": "2026-08-25T08:50:46.542Z",
       "id": "pFS0zETxPvA"
-    },
-    {
-      "name": "nike t shirt",
-      "quantity": 1,
-      "notes": "",
-      "category": "Clothing",
-      "image": "https://images.pexels.com/photos/30720847/pexels-photo-30720847.jpeg?auto=compress&cs=tinysrgb&h=350",
-      "userId": "RCAIBuS4fpo",
-      "dateAdded": "2026-08-28T06:10:55.993Z",
-      "id": "a9OQ0J_1peA"
-    },
-    {
-      "name": "adidos",
-      "quantity": 1,
-      "notes": "",
-      "category": "Clothing",
-      "image": "https://images.pexels.com/photos/1649675/pexels-photo-1649675.jpeg?auto=compress&cs=tinysrgb&h=350",
-      "userId": "RCAIBuS4fpo",
-      "dateAdded": "2026-08-28T06:11:13.226Z",
-      "id": "7EVysZOaYnc"
     }
+
+  
   ],
   "$schema": "./node_modules/json-server/schema.json"
 }
