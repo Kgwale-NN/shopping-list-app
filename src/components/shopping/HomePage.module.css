@@ -234,6 +234,70 @@ min-height: 280px;
   margin: 0;
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.delete-modal {
+  width: min(420px, 100%);
+  background: #FAF9F6;
+  border-radius: 16px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.2);
+  padding: 1.5rem;
+}
+
+.delete-modal h3 {
+  margin: 0 0 0.75rem;
+  color: #007F5F;
+  font-size: 1.35rem;
+}
+
+.delete-modal p {
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.5;
+}
+
+.delete-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.cancel-button,
+.confirm-delete-button {
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.cancel-button {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.confirm-delete-button {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.cancel-button:hover,
+.confirm-delete-button:hover {
+  opacity: 0.9;
+}
+
 /* Small Mobile - 480px */
 @media (min-width: 321px) and (max-width: 480px) {
   .card-image {

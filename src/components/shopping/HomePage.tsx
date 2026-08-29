@@ -22,6 +22,8 @@ const HomePage: React.FC = () => {
   const [showAddForm, setShowAddForm] = useState(false)
   const [showEditForm, setShowEditForm] = useState(false)
   const [editingItem, setEditingItem] = useState<ShoppingListItem | null>(null)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [itemToDelete, setItemToDelete] = useState<ShoppingListItem | null>(null)
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false)
 
   // Get search and sort from URL
@@ -200,14 +202,36 @@ const HomePage: React.FC = () => {
     }
   }
 
-  const handleDelete = async (id: string) => {
+  const handleDeleteClick = (id: string) => {
+    const item = shoppingLists.find((list) => list.id === id)
+
+    if (!item) return
+
+    setItemToDelete(item)
+    setShowDeleteDialog(true)
+  }
+
+  const handleDeleteCancel = () => {
+    setShowDeleteDialog(false)
+    setItemToDelete(null)
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!itemToDelete) return
+
     try {
-      await shoppingListApi.delete(id)
-      dispatch(deleteShoppingList(id))
+      await shoppingListApi.delete(itemToDelete.id)
+      dispatch(deleteShoppingList(itemToDelete.id))
+
+      setShowDeleteDialog(false)
+      setItemToDelete(null)
 
       setItemMessage('Item deleted successfully!')
       setTimeout(() => setItemMessage(''), 3000)
     } catch (error) {
+      setShowDeleteDialog(false)
+      setItemToDelete(null)
+
       setError('Failed to delete shopping list')
       setTimeout(() => setError(''), 3000)
       console.error('Error deleting shopping list:', error)
@@ -358,7 +382,7 @@ const HomePage: React.FC = () => {
                 key={list.id}
                 shoppingList={list}
                 onEdit={handleEdit}
-                onDelete={handleDelete}
+                onDelete={handleDeleteClick}
                 onToggleFavorite={handleToggleFavorite}
               />
             ))
@@ -396,6 +420,41 @@ const HomePage: React.FC = () => {
             setEditingItem(null)
           }}
         />
+      )}
+
+      {showDeleteDialog && itemToDelete && (
+        <div className={styles['modal-backdrop']} onClick={handleDeleteCancel}>
+          <div
+            className={styles['delete-modal']}
+            onClick={(event) => event.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-modal-title"
+          >
+            <h3 id="delete-modal-title">Delete shopping list?</h3>
+            <p>
+              Are you sure you want to delete <strong>{itemToDelete.name}</strong>? This action cannot be undone.
+            </p>
+
+            <div className={styles['delete-modal-actions']}>
+              <button
+                type="button"
+                className={styles['cancel-button']}
+                onClick={handleDeleteCancel}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className={styles['confirm-delete-button']}
+                onClick={handleDeleteConfirm}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
